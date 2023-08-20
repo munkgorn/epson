@@ -7,11 +7,11 @@ import { Dropdown } from 'antd';
 import { AutoComplete, Input } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
+import { Table } from 'antd';
 import axios from 'axios';
 import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
-import { Table, Tag } from 'antd';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -43,114 +43,53 @@ const items2 = [
       <LaptopOutlined />,
     ),
 ];
-// const columns = [
-//   {
-//     title: '',
-//     dataIndex: 0,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 1,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 2,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 3,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 4,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 5,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 6,
-//     key: '',
-//   },
-// ];
-
-// const data = [];
-
-// const props = {
-//   name: 'file',
-//   multiple: false,
-//   action: '/api/upload',
-//   method: 'post',
-// };
 const columns = [
   {
-    title: 'Item',
-    dataIndex: 'item',
-    key: 'item',
+    title: '',
+    dataIndex: 0,
+    key: '',
   },
   {
-    title: 'Current Value',
-    dataIndex: 'currentValue',
-    key: 'currentValue',
+    title: '',
+    dataIndex: 1,
+    key: '',
   },
   {
-    title: 'Unit',
-    dataIndex: 'unit',
-    key: 'unit',
+    title: '',
+    dataIndex: 2,
+    key: '',
   },
   {
-    title: 'Limit',
-    dataIndex: 'limit',
-    key: 'limit',
+    title: '',
+    dataIndex: 3,
+    key: '',
+  },
+  {
+    title: '',
+    dataIndex: 4,
+    key: '',
+  },
+  {
+    title: '',
+    dataIndex: 5,
+    key: '',
+  },
+  {
+    title: '',
+    dataIndex: 6,
+    key: '',
   },
 ];
-const data = [
-  {
-    key: '1',
-    item: 'Total print page',
-    currentValue: 657,
-    unit: 'Sheet',
-    limit: '400,000',
-  },
-];
-const columnsResult = [
-  {
-    title: 'No',
-    dataIndex: 'no',
-    key: 'no',
-  },
-  {
-    title: 'Symptom / Detail',
-    dataIndex: 'symptom',
-    key: 'symptom',
-  },
-  {
-    title: 'Remedy',
-    dataIndex: 'remedy',
-    key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-  },
-];
-const dataResult = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
-];
+
+const data = [];
+
+const props = {
+  name: 'file',
+  multiple: false,
+  action: '/api/upload',
+  method: 'post',
+};
+
 const { Dragger } = Upload;
 const { Meta } = Card;
 
@@ -270,13 +209,13 @@ export default function Index() {
                     <Row justify="center">
                       <Col span={20} style={{ margin: '10px' }}>
                         <Dragger
-                          // {...props}
-                          // onChange={(info) => {
-                          //   const { status, originFileObj } = info.file;
-                          //   if (status === 'done') {
-                          //     handleUpload(originFileObj);
-                          //   }
-                          // }}
+                          {...props}
+                          onChange={(info) => {
+                            const { status, originFileObj } = info.file;
+                            if (status === 'done') {
+                              handleUpload(originFileObj);
+                            }
+                          }}
                         >
                           <p className="ant-upload-drag-icon">
                             <InboxOutlined />
@@ -291,12 +230,15 @@ export default function Index() {
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columns} dataSource={data} />
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columnsResult} dataSource={dataResult} />
+                      {filteredResponseData.length > 0 ? (
+                        <Table
+                          dataSource={filteredResponseData}
+                          columns={columns}
+                          pagination={false} // Remove pagination if not required
+                        />
+                      ) : (
+                        <div>No data to display.</div>
+                      )}
                       </Col>
                     </Row>
                   </Card>

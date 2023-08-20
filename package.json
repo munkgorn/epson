@@ -7,9 +7,10 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "pkg .",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "sit": "cross-env NODE_ENV=sit CONFIG_ENV=env.sit.local next dev",
     "pkg": "pkg . --out-dir dist --output build"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "bootstrap": "^4.5.3",
     "busboy": "^1.6.0",
     "callcenter": "^1.0.0",
+    "dotenv": "^16.3.1",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.6",
     "exceljs": "^4.3.0",
@@ -42,6 +44,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/plugin-transform-flow-strip-types": "^7.22.5",
-    "@babel/preset-typescript": "^7.22.5"
+    "@babel/preset-typescript": "^7.22.5",
+    "cross-env": "^7.0.3"
   }
 }

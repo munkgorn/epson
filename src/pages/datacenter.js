@@ -24,65 +24,67 @@ export default function index() {
                 />
                 </Col>
             </Row>
-            <Row justify="center">
-                <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
-                    <a href="/specification">
-                        <Card
-                             hoverable
-                             style={{
-                             // width: 240,
-                             display: 'flex',
-                             justifyContent: 'center',
-                             alignItems: 'center',
-                             textAlign: 'center',
-                             padding: '16px',
-                             }}
-                            // cover={<img alt="example" src="images/epson.png" />}
-                        >
-                            <SolutionOutlined  style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
-                            <Meta title="Specification" description="" />
-                        </Card>
-                    </a>
-                </Col>
-                <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
-                    <a href="/manual">
-                        <Card
-                            hoverable
-                            style={{
-                            // width: 240,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                            padding: '16px',
-                            }}
-                            // cover={<img alt="example" src="images/epson.png" />}
-                        >
-                            <AlertOutlined style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
-                            <Meta title="Manual" description="" />
-                        </Card>
-                    </a>
-                </Col>
-                <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
-                    <a href="/knowledgeBase">
-                        <Card
-                            hoverable
-                            style={{
-                            // width: 240,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                            padding: '16px',
-                            }}
-                            // cover={<img alt="example" src="images/epson.png" />}
-                        >
-                            <AlertOutlined style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
-                            <Meta title="Knowledge Base" description="" />
-                        </Card>
-                    </a>
-                </Col>
-            </Row>
+            <Card>
+                <Row justify="center" id="card">
+                    <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
+                        <a href="/specandcompair">
+                            <Card
+                                hoverable
+                                style={{
+                                // width: 240,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                padding: '16px',
+                                }}
+                                // cover={<img alt="example" src="images/epson.png" />}
+                            >
+                                <SolutionOutlined  style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
+                                <Meta title="Specification & Comparison" description="" />
+                            </Card>
+                        </a>
+                    </Col>
+                    <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
+                        <a href="/manual">
+                            <Card
+                                hoverable
+                                style={{
+                                // width: 240,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                padding: '16px',
+                                }}
+                                // cover={<img alt="example" src="images/epson.png" />}
+                            >
+                                <AlertOutlined style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
+                                <Meta title="Manual" description="" />
+                            </Card>
+                        </a>
+                    </Col>
+                    <Col span={6}  style={{ margin: '20px', marginTop: '10px' }}>
+                        <a href="/knowledgeBase">
+                            <Card
+                                hoverable
+                                style={{
+                                // width: 240,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                padding: '16px',
+                                }}
+                                // cover={<img alt="example" src="images/epson.png" />}
+                            >
+                                <AlertOutlined style={{ fontSize: '24px', color: '#08c',marginBottom: '16px' }}/>
+                                <Meta title="Knowledge Base" description="" />
+                            </Card>
+                        </a>
+                    </Col>
+                </Row>
+            </Card>
         </Space>
     </>
   )

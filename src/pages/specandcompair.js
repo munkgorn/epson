@@ -19,7 +19,16 @@ export default function index() {
                         title: <HomeOutlined />,
                     },
                     {
-                        title: 'Intelligent Troubleshooting',
+                        href: '/datacenter',
+                        title: (
+                        <>
+                            <UserOutlined />
+                            <span>Data Center</span>
+                        </>
+                        ),
+                    },
+                    {
+                        title: 'Specification & Comparison',
                     },
                     ]}
                 />
@@ -27,86 +36,81 @@ export default function index() {
             </Row>
             <Card>
                 <Row justify="center">
-                    <Col span={20}  style={{ margin: '10px' }}>
-                        <h3>LFP</h3>
-                    </Col>
-                </Row>
-                <Row justify="center">
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/intrlligentDetail">
+                        <a href="/specification">
                             <Card
                                 hoverable
                                 style={{
                                     textAlign: 'center',
+                                    height:320,
                                 }}
-                                cover={<img alt="example" src="images/lfp1.png" />}
+                                cover={<img alt="example" src="images/m1.png" />}
                             >
                                 <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="SC-F Series" description="" />
+                                    <Meta title="Inkjet" description="" />
                                 </div>
                             </Card>
                         </a>
                     </Col>
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/intrlligentDetail">
+                        <a href="/specification">
                             <Card
                                 hoverable
                                 style={{
                                 textAlign: 'center',
+                                height:320,
                                 }}
-                                cover={<img alt="example" src="images/lfp2.png" />}
+                                cover={<img alt="example" src="images/m2.png" />}
                             >
                                 <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="SC-P Series" description="" />
+                                    <Meta title="BIJ" description="" />
                                 </div>
                             </Card>
                         </a>
                     </Col>
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/intrlligentDetail">
+                        <a href="/specification">
                             <Card
                                 hoverable
                                 style={{
                                 textAlign: 'center',
+                                height:320,
                                 }}
-                                cover={<img alt="example" src="images/lfp3.png" />}
+                                cover={<img alt="example" src="images/m3.png" />}
                             >
                                 <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="SC-S Series" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/intrlligentDetail">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                }}
-                                cover={<img alt="example" src="images/lfp4.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="SC-S Series" description="" />
+                                    <Meta title="Dot Matrix" description="" />
                                 </div>
                             </Card>
                         </a>
                     </Col>
                 </Row>
                 <Row justify="center">
-                    <Col span={20}  style={{ margin: '10px' }}>
-                        <h3>Projector / Others</h3>
-                    </Col>
-                </Row>
-                <Row justify="center">
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/projector">
+                        <a href="/specification">
                             <Card
                                 hoverable
                                 style={{
                                     textAlign: 'center',
+                                    height:320,
                                 }}
-                                cover={<img alt="example" src="images/p1.png" />}
+                                cover={<img alt="example" src="images/m4.png" />}
+                            >
+                                <div style={{ marginTop: 'auto' }}>
+                                    <Meta title="Small Printer" description="" />
+                                </div>
+                            </Card>
+                        </a>
+                    </Col>
+                    <Col span={5}  style={{ margin: '10px' }}>
+                        <a href="/specification">
+                            <Card
+                                hoverable
+                                style={{
+                                textAlign: 'center',
+                                height:320,
+                                }}
+                                cover={<img alt="example" src="images/m5.png" />}
                             >
                                 <div style={{ marginTop: 'auto' }}>
                                     <Meta title="Projector" description="" />
@@ -115,31 +119,17 @@ export default function index() {
                         </a>
                     </Col>
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/otherCheckErrorCode">
+                        <a href="/specification">
                             <Card
                                 hoverable
                                 style={{
                                 textAlign: 'center',
+                                height:320,
                                 }}
-                                cover={<img alt="example" src="images/p2.png" />}
+                                cover={<img alt="example" src="images/m6.png" />}
                             >
                                 <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="LIJ" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/otherCheckErrorCode">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                }}
-                                cover={<img alt="example" src="images/p3.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="RIPs" description="" />
+                                    <Meta title="LFP" description="" />
                                 </div>
                             </Card>
                         </a>

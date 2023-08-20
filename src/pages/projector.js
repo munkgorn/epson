@@ -23,72 +23,16 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
+      <a href="/projector">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
-      'checkErrorCode',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
-      'nvram',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
+      <a href="/projectorServiceManual">Service Manual & Diagram</a>,
       'serviceManual',
       <LaptopOutlined />,
     ),
 ];
-// const columns = [
-//   {
-//     title: '',
-//     dataIndex: 0,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 1,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 2,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 3,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 4,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 5,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 6,
-//     key: '',
-//   },
-// ];
-
-// const data = [];
-
-// const props = {
-//   name: 'file',
-//   multiple: false,
-//   action: '/api/upload',
-//   method: 'post',
-// };
 const columns = [
   {
     title: 'Item',
@@ -241,7 +185,10 @@ export default function Index() {
                             ),
                           },
                           {
-                            title: 'LFP',
+                            title: 'Projector',
+                          },
+                          {
+                            title: 'Data Analytic',
                           },
                         ]}
                       />
