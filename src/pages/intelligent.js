@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import{  Col, Divider, Row  } from 'antd';
 import { Card, Space } from 'antd';
 import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
 import { DownOutlined, SmileOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import { Breadcrumb } from 'antd';
+import { useSession } from 'next-auth/react';
 const { Meta } = Card;
 export default function index() {
+    const {data:session, status} = useSession();
+    useEffect(() => {
+        console.log(status)
+    }, [status])
+    
   return (
     <>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -15,7 +21,7 @@ export default function index() {
                 <Breadcrumb
                     items={[
                     {
-                        href: '/home',
+                        href: '/',
                         title: <HomeOutlined />,
                     },
                     {

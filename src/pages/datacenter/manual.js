@@ -6,7 +6,7 @@ import { DownOutlined, SmileOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import { Breadcrumb } from 'antd';
 const { Meta } = Card;
-export default function index() {
+export default function Manual() {
   return (
     <>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -15,7 +15,7 @@ export default function index() {
                 <Breadcrumb
                     items={[
                     {
-                        href: '/home',
+                        href: '/',
                         title: <HomeOutlined />,
                     },
                     {

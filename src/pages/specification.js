@@ -69,7 +69,7 @@ export default function index() {
                             <Breadcrumb
                                 items={[
                                     {
-                                        href: '/home',
+                                        href: '/',
                                         title: <HomeOutlined />,
                                     },
                                     {
