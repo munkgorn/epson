@@ -7,8 +7,8 @@ dotenv.config({ path: process.env.CONFIG_ENV });
 export async function connectDb() {
   const config = {
     host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'root',
+    user: process.env.DB_USER || 'userdb',
+    password: process.env.DB_PASSWORD || '!@#$1234',
     database: process.env.DB_NAME || 'epson_db',
   };
 
