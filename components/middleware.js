@@ -10,10 +10,10 @@ export function withAuth(WrappedComponent) {
     useEffect(() => {
       async function checkAuth() {
         const session = await getSession();
-        console.log('middleware', session?.user)
+        console.log('middleware', session)
         if (!session?.user?.username) {
           console.log('unauthenticated')
-          router.push("/auth/login"); // Redirect to login if not authenticated
+          // router.push("/auth/login"); // Redirect to login if not authenticated
         }
       }
 

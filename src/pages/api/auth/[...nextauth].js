@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import jwt from "jsonwebtoken";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { apiClient } from "../../../../components/apiClient";
+import md5 from 'md5'
 
 export const authOptions = {
 	// Configure one or more authentication providers
@@ -22,13 +24,17 @@ export const authOptions = {
 				},
 			},
 			async authorize(credentials, req) {
-				const user = {
-					id: 1,
-					username: "munkgorn",
-				};
-
-				// console.log(credentials,user);
-				return user;
+				try {
+					let result = await apiClient().post('/user/login', {...credentials, password: md5(credentials.password)});
+					if (result?.status==200 && result?.data) {
+						return {
+							username: result.data[0].username
+						};
+					}
+					return null;
+				} catch (e) {
+					console.log(e)
+				}
 			},
 		}),
 	],

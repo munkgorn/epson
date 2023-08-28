@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Col, Card, Space, Row, Breadcrumb } from "antd";
 import {
@@ -7,8 +7,23 @@ import {
 	HomeOutlined,
 } from "@ant-design/icons";
 import { withAuth } from "../../../components/middleware.js";
+import { apiClient } from "../../../components/apiClient.js";
+import md5 from "md5";
 const { Meta } = Card;
+
 const Index = () => {
+	const [first, setFirst] = useState(false)
+	useEffect(() => {
+	  (async()=>{
+		console.log(first)
+		if (first==false) {
+			let result = await apiClient().post('/user/login', {username:'admin',password:md5('fsoftpro')});
+			console.log('result client', result.data)
+			setFirst(true);
+		}
+	  })()
+	}, [first])
+	
 	return (
 		<>
 			<Space

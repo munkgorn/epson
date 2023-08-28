@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 
 export default function Login() {
     const router = useRouter();
@@ -9,29 +9,21 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
-      console.log('values',values);
       await signIn('credentials', {...values, callbackUrl: '/' })
-
-        // setLoading(true);
-        // // Simulate an API call or perform authentication logic here
-        // setTimeout(() => {
-        // console.log('Form values:', values);
-        // setLoading(false);
-        // router.push('/'); // Redirect to "/" page
-        // }, 2000);
     };
 
     useEffect(() => {
-      console.log(status, session)
-      // if (status==='authenticated') {
-      //   // router.push('/')
-      // }
+      if (status==='authenticated') {
+        router.push('/')
+      } else if (status=='unauthenticated' && router?.query?.error) {
+        message.error(router.query.error)
+      }
     }, [status])
     
     
     return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-              <Form name="login" onFinish={onFinish} layout="vertical" initialValues={{ username: 'munkgorn', password: '123456' }}>
+              <Form name="login" onFinish={onFinish} layout="vertical">
                 <Form.Item
                   label="Username"
                   name="username"

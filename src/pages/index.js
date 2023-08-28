@@ -10,6 +10,7 @@ const Index = () => {
     const {data:session,status} = useSession();
 	const router = useRouter();
     useEffect(() => {
+        console.log(session?.user)
 		if (status==='unauthenticated'){
 			router.push('/auth/login');
 		}
