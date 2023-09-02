@@ -1,4 +1,4 @@
-import { encode, decode } from '../../../../components/encryption';
+import { encode, decode } from '../../../utils/encryption';
 import { connectDb } from '../../../utils/db'; // We'll define this utility later
 
 export default async function handler(req, res) {
@@ -25,6 +25,7 @@ export default async function handler(req, res) {
         console.log(results)
       }
     );
+    connection.end();
 
     console.log(user)
 

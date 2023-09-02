@@ -1,46 +1,38 @@
-import React from 'react';
-import{  Col, Divider, Row  } from 'antd';
-import { Card, Space } from 'antd';
-import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
-import { Breadcrumb } from 'antd';
+import React, {useState} from 'react';
+import { Breadcrumb, Card, Space, Col, Divider, Row, AutoComplete, Input  } from 'antd';
+import { HomeOutlined ,UserOutlined   } from '@ant-design/icons';
+import { apiClient } from '../utils/apiClient';
 const { Meta } = Card;
-import { AutoComplete, Input } from 'antd';
-import { useState } from 'react';
+
 const getRandomInt = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
-const searchResult = (query) =>
-  new Array(getRandomInt(5))
-    .join('.')
-    .split('.')
-    .map((_, idx) => {
-      const category = `${query}${idx}`;
-      return {
-        value: category,
-        label: (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span>
-              Found {query} on{' '}
-              <a
-                href={`https://s.taobao.com/search?q=${query}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {category}
-              </a>
-            </span>
-            <span>{getRandomInt(200, 100)} results</span>
-          </div>
-        ),
-      };
-    });
-export default function index() {
+const searchResult = async (query) => {
+  console.log(query);
+  const resultModel = await apiClient().get('/model', {params: {
+    model_name: '*'+query+'*'
+  }});
+  console.log(resultModel)
+  return [
+    {
+      value: 'munkgorn',
+      label: (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <span>
+            Found {query} on{' '} {'munkgorn'}
+          </span>
+          <span>{1} results</span>
+        </div>
+      ),
+    }
+  ]
+}
+export default function Index() {
     const [options, setOptions] = useState([]);
+    const [models, setModels] = useState([]);
   const handleSearch = (value) => {
     setOptions(value ? searchResult(value) : []);
   };
@@ -88,14 +80,14 @@ export default function index() {
                     <Col span={20}  style={{ margin: '10px' }}>
                         <p><b>Model</b></p>
                         <AutoComplete
-                        style={{
-                            width: 300,
-                        }}
-                        options={options}
-                        onSelect={onSelect}
-                        onSearch={handleSearch}
-                        >
-                        <Input.Search size="large" placeholder="input here" enterButton />
+                          style={{
+                              width: 300,
+                          }}
+                          options={options}
+                          onSelect={onSelect}
+                          onSearch={handleSearch}
+                          >
+                          <Input.Search size="large" placeholder="input here" enterButton />
                         </AutoComplete>
                     </Col>
                 </Row>

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import jwt from "jsonwebtoken";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { apiClient } from "../../../../components/apiClient";
+import { apiClient } from "../../../utils/apiClient";
 import md5 from 'md5'
 
 export const authOptions = {

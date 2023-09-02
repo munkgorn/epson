@@ -4,6 +4,7 @@ const {encode,decode} = require('./encryption')
 const apiClient = (config={}) => {
     const instance = axios.create({
         baseURL: process.env.NEXT_PUBLIC_URL+'/api',
+        timeout: 10000
     })
     // Add a request interceptor
     instance.interceptors.request.use(function (config) {
@@ -26,6 +27,7 @@ const apiClient = (config={}) => {
     instance.interceptors.response.use(function (response) {
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
+        console.log('response decode')
         response.data = decode(response?.data?.data)
         return response;
     }, function (error) {

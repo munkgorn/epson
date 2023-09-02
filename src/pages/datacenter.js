@@ -6,24 +6,11 @@ import {
 	SolutionOutlined,
 	HomeOutlined,
 } from "@ant-design/icons";
-import { withAuth } from "../../../components/middleware.js";
-import { apiClient } from "../../../components/apiClient.js";
-import md5 from "md5";
+import { withAuth } from "../utils/middleware.js";
+import { apiClient } from "../utils/apiClient.js";
 const { Meta } = Card;
 
 const Index = () => {
-	const [first, setFirst] = useState(false)
-	useEffect(() => {
-	  (async()=>{
-		console.log(first)
-		if (first==false) {
-			let result = await apiClient().post('/user/login', {username:'admin',password:md5('fsoftpro')});
-			console.log('result client', result.data)
-			setFirst(true);
-		}
-	  })()
-	}, [first])
-	
 	return (
 		<>
 			<Space
@@ -52,7 +39,7 @@ const Index = () => {
 							span={6}
 							style={{ margin: "20px", marginTop: "10px" }}
 						>
-							<Link href="/datacenter/specandcompair">
+							<Link href="/specandcompair">
 								<Card
 									hoverable
 									style={{
@@ -83,7 +70,7 @@ const Index = () => {
 							span={6}
 							style={{ margin: "20px", marginTop: "10px" }}
 						>
-							<Link href="/datacenter/manual">
+							<Link href="/manual">
 								<Card
 									hoverable
 									style={{
@@ -111,7 +98,7 @@ const Index = () => {
 							span={6}
 							style={{ margin: "20px", marginTop: "10px" }}
 						>
-							<Link href="/datacenter/knowledgeBase">
+							<Link href="/knowledgeBase">
 								<Card
 									hoverable
 									style={{

@@ -4,13 +4,12 @@ import { AlertOutlined, SolutionOutlined, HomeOutlined } from '@ant-design/icons
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { withAuth } from '../../components/middleware';
+import { withAuth } from '../utils/middleware';
 const { Meta } = Card;
 const Index = () => {
     const {data:session,status} = useSession();
 	const router = useRouter();
     useEffect(() => {
-        console.log(session?.user)
 		if (status==='unauthenticated'){
 			router.push('/auth/login');
 		}

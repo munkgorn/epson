@@ -12,8 +12,8 @@ export function withAuth(WrappedComponent) {
         const session = await getSession();
         console.log('middleware', session)
         if (!session?.user?.username) {
-          console.log('unauthenticated')
-          // router.push("/auth/login"); // Redirect to login if not authenticated
+          console.log('middleware check authen')
+          router.push("/auth/login"); // Redirect to login if not authenticated
         }
       }
 
