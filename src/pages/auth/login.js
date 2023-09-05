@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Form, Input, Button } from 'antd';
-import { useState } from 'react';
-import { Card } from 'antd';
-export default function index() {
+import { Form, Input, Button, message } from 'antd';
+
+export default function Login() {
     const router = useRouter();
+    const {data:session, status} = useSession();
     const [loading, setLoading] = useState(false);
 
-    const onFinish = (values) => {
-        setLoading(true);
-        // Simulate an API call or perform authentication logic here
-        setTimeout(() => {
-        console.log('Form values:', values);
-        setLoading(false);
-        router.push('/home'); // Redirect to "/home" page
-        }, 2000);
+    const onFinish = async (values) => {
+      await signIn('credentials', {...values, callbackUrl: '/' })
     };
+
+    useEffect(() => {
+      if (status==='authenticated') {
+        router.push('/')
+      } else if (status=='unauthenticated' && router?.query?.error) {
+        message.error(router.query.error)
+      }
+    }, [status])
+    
+    
     return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
               <Form name="login" onFinish={onFinish} layout="vertical">

@@ -39,7 +39,7 @@ const searchResult = (query) =>
         ),
       };
     });
-export default function index() {
+export default function knowledgeBase() {
     const [options, setOptions] = useState([]);
   const handleSearch = (value) => {
     setOptions(value ? searchResult(value) : []);
@@ -55,7 +55,7 @@ export default function index() {
                 <Breadcrumb
                     items={[
                     {
-                        href: '/home',
+                        href: '/',
                         title: <HomeOutlined />,
                     },
                     {
