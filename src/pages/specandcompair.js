@@ -1,8 +1,9 @@
-import React, {useState,useEffect} from "react";
+import React, {useState,useEffect,useContext} from "react";
+import {useRecoilState} from 'recoil';
+import { modelState } from '@/store/info';
 import Link from 'next/link';
 import { useRouter } from "next/router";
-import { Col, Row, Breadcrumb, Dropdown } from "antd";
-import { Card, Space } from "antd";
+import { Card, Space,Col, Row, Breadcrumb, message,Button } from "antd";
 import {
 	HomeOutlined,
 	UserOutlined,
@@ -11,14 +12,23 @@ import { apiClient } from '../utils/apiClient';
 import _ from 'lodash';
 
 const { Meta } = Card;
-export default function Specandcompair() {
+
+const Specandcompair = () =>  {
+	const [model,setModel] = useRecoilState(modelState);
 	const router = useRouter();
     const [lists, setLists] = useState([]);
 
+	console.log('store',model)
     const getLists = async () => {
+        message.loading({key:'init',content:'loading...'})
         const models = await apiClient().get('/model');
         console.log(models);
         setLists(models.data)
+        if (_.size(models?.data)>0) {
+            message.success({key:'init',content:'Load model success'})
+        } else {
+            message.error({key:'inti',content:'Cannot load model'});
+        }
     }
 
     useEffect(() => {
@@ -65,7 +75,10 @@ export default function Specandcompair() {
 					{
 						_.size(lists)>0 && _.map(lists, model => (
 						<Col span={6}>
-							<Link href={"/manualDetail?model="+model.model_name}>
+							<Button type="link" onClick={()=>{
+								setModel(model)
+								router.push("/specification");
+							}}>
 								<Card
 									hoverable
 									style={{
@@ -78,7 +91,7 @@ export default function Specandcompair() {
 										<Meta title={model.model_name} description="" />
 									</div>
 								</Card>
-							</Link>
+							</Button>
 						</Col>
 						))
 					}
@@ -87,4 +100,5 @@ export default function Specandcompair() {
 			</Space>
 		</>
 	);
-}
+};
+export default Specandcompair;
