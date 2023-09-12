@@ -1,45 +1,29 @@
 import React from 'react';
-import{  Col, Divider, Row  } from 'antd';
-import { Card, Space } from 'antd';
-import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
-import { Breadcrumb,Menu } from 'antd';
-import { Layout,theme,  } from 'antd';
-import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import {useRecoilValue} from 'recoil';
+import { modelState } from '@/store/info';
+import{  Layout,theme,Breadcrumb,Menu,Dropdown,Col, Card, Space, Row  } from 'antd';
+import { LaptopOutlined, NotificationOutlined,DownOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
+import { useRouter } from 'next/router';
+import _ from 'lodash';
 const { Content,Sider  } = Layout;
 const { Meta } = Card;
-function getItem(label, key, icon, children) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-    };
-  }
+
 const items = [
     {
-      key: '1',
-      label: (
-        <a target="_blank" rel="#" href="#">
-          Model
-        </a>
-      ),
+        key: 'specification',
+        label: (<><UserOutlined /> Specification</>),
+        path: '/specification' // use path for redirect
     },
-  ];
-  const items2 = [
-    getItem(
-        <a href="/specification">Specification</a>,
-        'specification',
-        <UserOutlined />,
-      ),
-      getItem(
-        <a href="/comparison">Comparison</a>,
-        'comparison',
-        <LaptopOutlined />,
-      ),
-  ];
-export default function index() {
+    {
+        key: 'comparison',
+        label: (<><LaptopOutlined /> Specification</>),
+        path: '/comparison'
+    },
+];
+const Specification = () => {
+    const model = useRecoilValue(modelState);
+    const router = useRouter();
+    console.log('model is ',model)
     const {
         token: { colorBgContainer },
       } = theme.useToken();
@@ -61,7 +45,8 @@ export default function index() {
                             style={{
                                 height: '100%',
                             }}
-                            items={items2}
+                            items={items}
+                            onClick={({item,key,keyPath,domEvent})=>router.push(item?.props?.path)}
                         />
                     </Sider>
                     <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -157,3 +142,5 @@ export default function index() {
     </>
   )
 }
+
+export default Specification;

@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
-import { Breadcrumb, Card, Space, Col, Divider, Row, AutoComplete, Input  } from 'antd';
+import React, {useState,useEffect} from 'react';
+import { Breadcrumb, Card, Space, Col, Divider, Row, AutoComplete, Input, message  } from 'antd';
 import { HomeOutlined ,UserOutlined   } from '@ant-design/icons';
 import { apiClient } from '../utils/apiClient';
+import { useRouter } from 'next/router';
+import _ from 'lodash';
 const { Meta } = Card;
 
 const getRandomInt = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -32,13 +34,87 @@ const searchResult = async (query) => {
 }
 export default function Index() {
     const [options, setOptions] = useState([]);
-    const [models, setModels] = useState([]);
+    const [series, setSeries] = useState([])
+    const router = useRouter();
   const handleSearch = (value) => {
     setOptions(value ? searchResult(value) : []);
   };
   const onSelect = (value) => {
     console.log('onSelect', value);
   };
+  const getModels = async() => {
+    message.loading({
+      key: 'init',
+      content: 'loading model...'
+    })
+    const result = await apiClient().get('/model');
+    setOptions(result?.data);
+    if (_.size(result?.data)>0) {
+      message.success({
+        key: 'init',
+        content: 'load models success...'
+      })
+    } else {
+      message.error({
+        key:'init',
+        content: 'cannot load models'
+      })
+    }
+  }
+  const getModel = async(modalname) => {
+    message.loading({
+      key: 'init',
+      content: 'loading model...'
+    })
+    const result = await apiClient().get('/model', {params:{model_name: modalname}});
+    console.log('model', _.head(result.data))
+    message.success({
+      key:'init',
+      content:'load model success'
+    })
+    return _.result(result,'data[0]');
+  }
+  const getSeries = async(modelID) => { 
+    console.log('getseries',modelID)
+    if (modelID){
+      message.success({
+        key:'init',
+        content:'loading series...'
+      })
+      const result = await apiClient().get('/series', {params:{id_model:modelID}});
+      console.log('sereies', result.data)
+      setSeries(result.data)
+      message.success({
+        key:'init',
+        content:'load series success'
+      })
+    } else {
+      message.error('Not found model id');
+    }
+      
+  }
+  useEffect(() => {
+    (async()=>{
+      if (_.size(options)==0) {
+        await getModels();
+      }
+    })()
+  }, [options])
+  
+  useEffect(() => {
+    (async()=>{
+      if (router?.query?.model) {
+        let result = await getModel(router?.query?.model)
+        
+        if (result?.id) {
+          console.log(result.id)
+          await getSeries(result.id);
+        }
+      }
+    })()
+  }, [router?.query])
+  
+  
   return (
     <>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -86,6 +162,7 @@ export default function Index() {
                           options={options}
                           onSelect={onSelect}
                           onSearch={handleSearch}
+                          value={router?.query?.model}
                           >
                           <Input.Search size="large" placeholder="input here" enterButton />
                         </AutoComplete>
@@ -94,8 +171,9 @@ export default function Index() {
                 <Row justify="center">
                     <Col span={20}  style={{ margin: '10px' }}>
                         <p><b>Items</b></p>
-                        <p>1. การตั้งค่าเบื้องต้นของ L3210</p>
-                        <p>2. การเติมหมึกของ L3210</p>
+                        {
+                          _.size(series)>0 ? _.map(series, (ser,i) => (<p>{++i}. {ser.series_name}</p>)) : <p></p>
+                        }
                     </Col>
                 </Row>
             </Card>
