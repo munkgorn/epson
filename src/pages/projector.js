@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -21,6 +21,7 @@ function getItem(label, key, icon, children) {
     label,
   };
 }
+
 const items2 = [
   getItem(
       <a href="/projector">Data Analytic</a>,
@@ -44,108 +45,104 @@ const columns = [
     dataIndex: 'currentValue',
     key: 'currentValue',
   },
-  {
-    title: 'Unit',
-    dataIndex: 'unit',
-    key: 'unit',
-  },
-  {
-    title: 'Limit',
-    dataIndex: 'limit',
-    key: 'limit',
-  },
-];
-const data = [
-  {
-    key: '1',
-    item: 'Total print page',
-    currentValue: 657,
-    unit: 'Sheet',
-    limit: '400,000',
-  },
 ];
 const columnsResult = [
   {
-    title: 'No',
+    title: 'ช่วงเวลาที่เกิดอาการ',
     dataIndex: 'no',
     key: 'no',
   },
   {
-    title: 'Symptom / Detail',
+    title: 'อาการ',
     dataIndex: 'symptom',
     key: 'symptom',
   },
   {
-    title: 'Remedy',
+    title: 'อะไหล่ที่เกี่ยวข้อง',
     dataIndex: 'remedy',
     key: 'remedy',
   },
   {
-    title: 'Part Code',
+    title: 'Part code',
     dataIndex: 'part',
     key: 'part',
-  },
-];
-const dataResult = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
   },
 ];
 const { Dragger } = Upload;
 const { Meta } = Card;
 
-const items = [
-  {
-    key: '1',
-    label: (
-      <a target="_blank" rel="noopener noreferrer" href="#">
-        Model item
-      </a>
-    ),
-  },
-];
+const props = {
+  name: 'file',
+  multiple: false,
+  action: '/api/upload',
+  method: 'post',
+};
+const propsCalculate = {
+  name: 'file',
+  multiple: false,
+  action: '/api/analytic/readfile',
+  method: 'post',
+};
 
 export default function Index() {
-  const [responseData, setResponseData] = useState([]);
+  const [dataResult, setResponseData] = useState([]);
+  const [dataResultDetail, setResponseDataDetail] = useState([]);
+  const [itemsModel, setItems] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(null);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/analytic/list')
+      .then(response => response.json())
+      .then(data => {
+        const transformedItems = data.map(item => ({
+          key: item.model,
+          label: item.model,
+        }));
+        setItems(transformedItems);
+        setSelectedModel('EB-FH52'); // hard code
+      });
+  }, []);
+  
+  const handleModelSelect = model => {
+    setSelectedModel(model);
+  };
 
+  axios.defaults.debug = false;
   const handleUpload = async (file) => {
+    console.log(file);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      console.log('start send axios');
-    
-      const response = await axios.post(props.action, formData);
-      setResponseData(response);
-      console.log('get data');
-      console.log(response);
-      if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        // console.log(response.data.data);
-        setResponseData(response.data.data); // Update state with response data
-      } else {
-        console.log('Empty response data or invalid format');
-        setResponseData([]); // Set an empty array if no response data or invalid format
-      }
+        const params = {
+          filename:file.name,
+          model: selectedModel
+        };
+        axios.post('/api/analytic/readfile', params)
+        .then((response) => {
+          // console.log('Response:', response.data);
+          setResponseData(response.data.errorData);
+          setResponseDataDetail(response.data.information);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      
     } catch (error) {
-      console.error(error);
-      setResponseData([]); // Set an empty array if an error occurs
+      console.error('API Request Error:', error);
+      setResponseData([]); // Set an empty array if there's an error in making the API request
     }
-
+  
     console.log('end send axios');
   };
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
-  const filteredResponseData = responseData.filter(row => row.length > 1);
+
+  const filteredResponseData = dataResult.filter(row => row.length > 0);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
   return (
-    <>
+    <> 
       <Layout>
         <Content style={{ padding: '0 50px' }}>
           <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
@@ -158,7 +155,6 @@ export default function Index() {
                 <Menu
                     mode="inline"
                     defaultSelectedKeys={['intrlligentDetail']}
-                    // defaultOpenKeys={['sub1']}
                     style={{
                         height: '100%',
                     }}
@@ -201,29 +197,37 @@ export default function Index() {
                           <b>Model</b>
                         </p>
                         <Dropdown
-                          menu={{
-                            items,
-                          }}
+                          overlay={
+                            <Menu>
+                              {itemsModel.map(item => (
+                                <Menu.Item key={item.key}>
+                                  <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
+                                </Menu.Item>
+                              ))}
+                            </Menu>
+                          }
                         >
-                          <a onClick={(e) => e.preventDefault()}>
+                          <a onClick={e => e.preventDefault()}>
                             <Space>
-                              Select
-                              <DownOutlined />
+                              Select <DownOutlined />
                             </Space>
                           </a>
                         </Dropdown>
+                        {selectedModel && (
+                          <p>Selected Model: {selectedModel}</p>
+                        )}
                       </Col>
                     </Row>
                     <Row justify="center">
                       <Col span={20} style={{ margin: '10px' }}>
                         <Dragger
-                          // {...props}
-                          // onChange={(info) => {
-                          //   const { status, originFileObj } = info.file;
-                          //   if (status === 'done') {
-                          //     handleUpload(originFileObj);
-                          //   }
-                          // }}
+                          {...props}
+                          onChange={(info) => {
+                            const { status, originFileObj } = info.file;
+                            if (status === 'done') {
+                              handleUpload(originFileObj);
+                            }
+                          }}
                         >
                           <p className="ant-upload-drag-icon">
                             <InboxOutlined />
@@ -236,14 +240,17 @@ export default function Index() {
                         </Dragger>
                       </Col>
                     </Row>
+                    
+                    
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columns} dataSource={data} />
+                        <Table columns={columns} dataSource={dataResultDetail} />
                       </Col>
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columnsResult} dataSource={dataResult} />
+                      <Table columns={columnsResult} dataSource={dataResult} pagination={false} />
+
                       </Col>
                     </Row>
                   </Card>
