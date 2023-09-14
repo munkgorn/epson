@@ -53,32 +53,7 @@ const columns = [
     title: '',
     dataIndex: 1,
     key: '',
-  },
-  {
-    title: '',
-    dataIndex: 2,
-    key: '',
-  },
-  {
-    title: '',
-    dataIndex: 3,
-    key: '',
-  },
-  {
-    title: '',
-    dataIndex: 4,
-    key: '',
-  },
-  {
-    title: '',
-    dataIndex: 5,
-    key: '',
-  },
-  {
-    title: '',
-    dataIndex: 6,
-    key: '',
-  },
+  }
 ];
 
 const data = [];
