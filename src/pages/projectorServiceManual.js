@@ -37,21 +37,25 @@ const items2 = [
 ];
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
-  const [selectedModel, setSelectedModel] = useState(null);
+  const [manual, setSelectedManual] = useState(null);
+  const [diagram, setSelectedDiagram] = useState(null);
   useEffect(() => {
-    fetch('http://localhost:3000/api/analytic/list')
+    fetch('http://localhost:3000/api/manual/listModel')
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         const transformedItems = data.map(item => ({
-          key: item.model,
-          label: item.model,
+          key: item.model_name,
+          label: item.model_name,
+          manual: item.manual,
+          diagram: item.diagram,
         }));
         setItems(transformedItems);
-        setSelectedModel('EB-FH52'); // hard code
       });
   }, []);
-  const handleModelSelect = model => {
-    setSelectedModel(model);
+  const handleModelSelect = (manual, diagram) => {
+      setSelectedManual(manual);
+      setSelectedDiagram(diagram);
   };
   const {
     token: { colorBgContainer },
@@ -116,19 +120,28 @@ export default function Index() {
                         {/* <a onClick={() => handleModelSelect(item.key)}>{item.label}</a> */}
                         <Space wrap>
                         {itemsModel.map(item => (
-                            <Button type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
+                            <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
                         ))}
                         </Space>
                       </Col>
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                        Service Manual
-                        </Button> 
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                        Diagram
-                        </Button>
+                        {manual && (
+                          <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+                            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                              Service Manual {manual}
+                            </Button>
+                          </a>
+                        )}
+
+                        {diagram && (
+                          <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+                            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                              Diagram {diagram}
+                            </Button>
+                          </a>
+                        )}
                       </Col>
                     </Row>
                   </Card>
