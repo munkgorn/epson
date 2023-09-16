@@ -123,7 +123,7 @@ export default function Index() {
                             <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
                         ))}
                         </Space>
-                      </Col> 
+                      </Col>  
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
