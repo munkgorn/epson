@@ -32,7 +32,7 @@ const items2 = [
     getItem(
       <a href="/projectorServiceManual">Service Manual & Diagram</a>,
       'serviceManual',
-      <LaptopOutlined />,
+      <LaptopOutlined />, 
     ),
 ];
 export default function Index() {
