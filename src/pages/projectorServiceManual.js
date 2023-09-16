@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -25,53 +25,34 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
+      <a href="/projector">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
-      'checkErrorCode',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
-      'nvram',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
+      <a href="/projectorServiceManual">Service Manual & Diagram</a>,
       'serviceManual',
-      <LaptopOutlined />,
+      <LaptopOutlined />, 
     ),
-];
-const columns = [
-  {
-    title: 'Symptom / Detail',
-    dataIndex: 'symptom',
-    key: 'symptom',
-  },
-  {
-    title: 'Remedy',
-    dataIndex: 'remedy',
-    key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-  },
-];
-const data = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
 ];
 export default function Index() {
+  const [itemsModel, setItems] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(null);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/analytic/list')
+      .then(response => response.json())
+      .then(data => {
+        const transformedItems = data.map(item => ({
+          key: item.model,
+          label: item.model,
+        }));
+        setItems(transformedItems);
+        setSelectedModel('EB-FH52'); // hard code
+      });
+  }, []);
+  const handleModelSelect = model => {
+    setSelectedModel(model);
+  };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -117,10 +98,10 @@ export default function Index() {
                             ),
                           },
                           {
-                            title: 'LFP',
+                            title: 'Projector',
                           },
                           {
-                            title: 'NVRAM Viewer',
+                            title: 'Service Manual & Diagram',
                           },
                         ]}
                       />
@@ -132,9 +113,11 @@ export default function Index() {
                         <p>
                           <b>Model</b>
                         </p>
+                        {/* <a onClick={() => handleModelSelect(item.key)}>{item.label}</a> */}
                         <Space wrap>
-                          <Button type="primary">SC-F6330</Button>
-                          <Button type="primary">SC-F6430</Button>
+                        {itemsModel.map(item => (
+                            <Button type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
+                        ))}
                         </Space>
                       </Col>
                     </Row>
