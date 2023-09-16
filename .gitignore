@@ -4,11 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
-public/upload/manual/ServiceManual_SC-F530.pdf
-public/upload/manual/ServiceManual_SC-F9330_SC-F9430_SC-F9430H.pdf
-public/upload/manual/ServiceManual_SC-F530.pdf
-public/upload/manual/ServiceManual_SC-F6430_SC-F6430H.pdf
-public/upload/manual/ServiceManual_SC-F3030.pdf
+public/upload/manual/*
+public/upload/diagram/*
 # testing
 /coverage
 
