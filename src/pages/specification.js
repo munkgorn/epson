@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { modelState } from "@/store/info";
 import {
 	Select,
 	Form,
