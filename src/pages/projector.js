@@ -90,7 +90,7 @@ export default function Index() {
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState(null);
   useEffect(() => {
-    fetch('http://localhost:3000/api/analytic/list')
+    fetch('/api/analytic/list')
       .then(response => response.json())
       .then(data => {
         const transformedItems = data.map(item => ({
@@ -98,7 +98,7 @@ export default function Index() {
           label: item.model,
         }));
         setItems(transformedItems);
-        setSelectedModel('EB-FH52'); // hard code
+        setSelectedModel('EB-FH52'); 
       });
   }, []);
   
