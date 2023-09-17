@@ -66,7 +66,7 @@ export default function Index() {
   const [manual, setSelectedManual] = useState(null);
   const [diagram, setSelectedDiagram] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModel')
+    fetch('/api/manual/listModelRips')
       .then(response => response.json())
       .then(data => {
         console.log(data);

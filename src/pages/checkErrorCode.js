@@ -61,21 +61,13 @@ const columns = [
     key: 'part',
   },
 ];
-const data = [
-  // {
-  //   key: '1',
-  //   no: '1',
-  //   symptom: 'Total Print 136,000 ㎡',
-  //   remedy: 'Replace Print Head',
-  //   part: 'FA61002 “Print Head”',
-  // },
-];
+const data = [];
 
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModel')
+    fetch('/api/manual/listModelSC')
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -100,7 +92,7 @@ export default function Index() {
   const handleModelSelectModel = async (errorCode) => {
     setErrorCode(errorCode);
     try {
-      const response = await axios.post('http://localhost:3000/api/errorCode/find', {
+      const response = await axios.post('/api/errorCode/find', {
         model: selectedItem,
         errorCode: errorCode,
       });
