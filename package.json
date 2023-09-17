@@ -15,7 +15,7 @@
     "pkg": "pkg . --out-dir dist --output build"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.1.4", 
+    "@ant-design/icons": "^5.1.4",
     "antd": "^5.6.2",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
