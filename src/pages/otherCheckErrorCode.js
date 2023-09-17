@@ -65,7 +65,7 @@ export default function Index() {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModel')
+    fetch('/api/manual/listModelRips')
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -74,6 +74,7 @@ export default function Index() {
           label: item.model_name,
           manual: item.manual,
           diagram: item.diagram,
+          typeModel:'RIPs'
         }));
         setItems(transformedItems);
       });
@@ -90,9 +91,10 @@ export default function Index() {
   const handleModelSelectModel = async (errorCode) => {
     setErrorCode(errorCode);
     try {
-      const response = await axios.post('http://localhost:3000/api/errorCode/find', {
+      const response = await axios.post('/api/errorCode/find', {
         model: selectedItem,
         errorCode: errorCode,
+        type:'RIPs'
       });
       const responseData = response.data.map(item => ({
         key: item.id, // Unique key for each row
@@ -192,7 +194,7 @@ export default function Index() {
                     </Row>
                   </Card>
                 </Space>
-              </Content>
+            </Content>
           </Layout>
         </Content>
       </Layout>
