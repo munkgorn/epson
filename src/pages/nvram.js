@@ -146,7 +146,7 @@ export default function Index() {
                         </p>
                         <Space wrap>
                           {itemsModel.map(item => (
-                            <Button key={item.key} 
+                            <Button type="primary" key={item.key} 
                             onClick={() => handleModelSelect(item.nvram)} >
                               {item.label}
                             </Button>
