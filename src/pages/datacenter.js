@@ -1,135 +1,60 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { Col, Card, Space, Row, Breadcrumb } from "antd";
-import {
-	AlertOutlined,
-	SolutionOutlined,
-	HomeOutlined,
-} from "@ant-design/icons";
+import { Card, message, Row, Col, Button } from "antd";
 import { withAuth } from "../utils/middleware.js";
 import { apiClient } from "../utils/apiClient.js";
 const { Meta } = Card;
+import { selectModelState } from "@/store/data";
+import { useRecoilState } from "recoil";
+import { useRouter } from "next/router.js";
+import _ from 'lodash';
 
-const Index = () => {
+const Datacenter = () => {
+	const [selectModel,setSelectModel] = useRecoilState(selectModelState);
+	const router = useRouter();
+    const [lists, setLists] = useState([]);
+
+    const getLists = async () => {
+        message.loading({key:'init',content:'loading...'})
+        const models = await apiClient().get('/model');
+        console.log(models);
+        setLists(models.data)
+        if (_.size(models?.data)>0) {
+            message.success({key:'init',content:'Load model success'})
+        } else {
+            message.error({key:'inti',content:'Cannot load model'});
+        }
+    }
+
+    useEffect(() => {
+        (async()=>{
+            if (_.size(lists)==0) {
+                await getLists();
+            }
+        })()
+    }, [lists])
+
 	return (
 		<>
-			<Space
-				direction="vertical"
-				size="middle"
-				style={{ display: "flex" }}
-			>
+			<Card>
 				<Row justify="center">
-					<Col span={20}>
-						<Breadcrumb
-							items={[
-								{
-									href: "/",
-									title: <HomeOutlined />,
-								},
-								{
-									title: "Data Center",
-								},
-							]}
-						/>
-					</Col>
+				{
+					_.size(lists)>0 && _.map(lists, val => (
+						<Col span={8} >
+							<Button type="link" onClick={()=>{
+								setSelectModel(val);
+								router.push('/specification')
+							}} style={{width:'100%'}}>
+								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} />}>
+									<Meta title={val.model_name} />
+								</Card>
+							</Button>
+						</Col>
+					))
+				}
 				</Row>
-				<Card>
-					<Row justify="center" id="card">
-						<Col
-							span={6}
-							style={{ margin: "20px", marginTop: "10px" }}
-						>
-							<Link href="/specandcompair">
-								<Card
-									hoverable
-									style={{
-										// width: 240,
-										display: "flex",
-										justifyContent: "center",
-										alignItems: "center",
-										textAlign: "center",
-										padding: "16px",
-									}}
-									// cover={<img alt="example" src="images/epson.png" />}
-								>
-									<SolutionOutlined
-										style={{
-											fontSize: "24px",
-											color: "#08c",
-											marginBottom: "16px",
-										}}
-									/>
-									<Meta
-										title="Specification & Comparison"
-										description=""
-									/>
-								</Card>
-							</Link>
-						</Col>
-						<Col
-							span={6}
-							style={{ margin: "20px", marginTop: "10px" }}
-						>
-							<Link href="/manual">
-								<Card
-									hoverable
-									style={{
-										// width: 240,
-										display: "flex",
-										justifyContent: "center",
-										alignItems: "center",
-										textAlign: "center",
-										padding: "16px",
-									}}
-									// cover={<img alt="example" src="images/epson.png" />}
-								>
-									<AlertOutlined
-										style={{
-											fontSize: "24px",
-											color: "#08c",
-											marginBottom: "16px",
-										}}
-									/>
-									<Meta title="Manual" description="" />
-								</Card>
-							</Link>
-						</Col>
-						<Col
-							span={6}
-							style={{ margin: "20px", marginTop: "10px" }}
-						>
-							<Link href="/knowledgeBase">
-								<Card
-									hoverable
-									style={{
-										// width: 240,
-										display: "flex",
-										justifyContent: "center",
-										alignItems: "center",
-										textAlign: "center",
-										padding: "16px",
-									}}
-									// cover={<img alt="example" src="images/epson.png" />}
-								>
-									<AlertOutlined
-										style={{
-											fontSize: "24px",
-											color: "#08c",
-											marginBottom: "16px",
-										}}
-									/>
-									<Meta
-										title="Knowledge Base"
-										description=""
-									/>
-								</Card>
-							</Link>
-						</Col>
-					</Row>
-				</Card>
-			</Space>
+			</Card>
 		</>
 	);
 }
 
-export default withAuth(Index);
+export default withAuth(Datacenter);

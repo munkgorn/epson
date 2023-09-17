@@ -1,11 +1,12 @@
 import React, {useState,useEffect} from 'react';
 import {useRecoilState} from 'recoil';
-import { modelState } from '@/store/info';
-import{  Col, Card, Space, Row,Dropdown,Breadcrumb,Menu,Layout,theme, message, Select, Form, Table  } from 'antd';
+import{  Col, Card, Button, Row,Dropdown,Breadcrumb,Menu,Layout,theme, message, Select, Form, Table, Space  } from 'antd';
 import { LaptopOutlined,DownOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
 import _ from 'lodash';
 import { apiClient } from '@/utils/apiClient';
 import { useRouter } from 'next/router';
+import MyModel from "@/components/myModel";
+import { selectModelState } from '@/store/data';
 const { Content,Sider  } = Layout;
 const { Meta } = Card;
 function getItem(label, key, icon, children) {
@@ -39,22 +40,22 @@ const items = [
       ),
   ];
 const Comparison = () => {
-    const { token: { colorBgContainer }, } = theme.useToken();
-    const [model,setModel] = useRecoilState(modelState);
+    
+    const [selectModel,setSelectModel] = useRecoilState(selectModelState);
     const router = useRouter();
     const [series, setSeries] = useState([]);
     const [optionSeries, setOptionSeries] = useState([])
+    const [optionSeriesRemaining, setOptionSeriesRemaining] = useState([])
     const [form] = Form.useForm();
     const [selectedSeries, setSelectedSeries] = useState([]);
     const [dataSource, setDataSource] = useState([])
-
+    
     const filterOption = (input, option) => {
         let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
         let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
         return _.startsWith(labelLow, inputLow) ||inputLow==labelLow
     }
-
-    const tableColumn = [
+    const defaultTableColumn = [
         {
             title:'',
             dataIndex:'head',
@@ -66,9 +67,10 @@ const Comparison = () => {
                 <Form.Item name={['series','1']}>
                     <Select 
                         filterOption={filterOption}
-                        options={optionSeries} 
+                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
                         placeholder="Modal" 
                         showSearch 
+                        
                         style={{width:'100%'}} />
                 </Form.Item>
             ),
@@ -80,7 +82,7 @@ const Comparison = () => {
                 <Form.Item name={['series','2']}>
                     <Select 
                         filterOption={filterOption}
-                        options={_.filter(optionSeries, f => selectedSeries[0]!=f.value)} 
+                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
                         placeholder="Modal" 
                         showSearch 
                         style={{width:'100%'}} />
@@ -94,7 +96,7 @@ const Comparison = () => {
                 <Form.Item name={['series','3']}>
                     <Select 
                         filterOption={filterOption}
-                        options={_.filter(optionSeries, f => selectedSeries[0]!=f.value && selectedSeries[1]!=f.value)} 
+                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
                         placeholder="Modal" 
                         showSearch 
                         style={{width:'100%'}} />
@@ -102,26 +104,34 @@ const Comparison = () => {
             ),
             dataIndex:'compare3',
             key: 'compare3'
-        }
+        },
     ]
+    const [tableColumn, setTableColumn] = useState(defaultTableColumn)
 
+    const removeColumn = (index) => {
+        let column = _.cloneDeep(tableColumn);
+        delete column[index];
+        let newColumn = column;
+        setTableColumn(newColumn)
+    }
 
     const getSeries = async() => {
         message.loading({key:'series',content:'loading series...'});
-        console.log(model)
         // let resultModel = await apiClient().get('/model');
-        let resultSeries = await apiClient().get('/series',{params:{id_model: model.id}}).catch(e => message.error({key:'series',content:'error series'}));
+        let resultSeries = await apiClient().get('/series',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'series',content:'error series'}));
         if (_.size(resultSeries?.data)>0) {
             setSeries(resultSeries.data)
-            console.log(resultSeries.data)
+            console.log('optionseries',resultSeries.data)
             setOptionSeries(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
+            setSelectedSeries([])
+            
             message.success({key:'series',content:'load series succes'})
         }
     }
 
     const getColumn = async () => {
         message.loading({key:'column',content:'loading column...'});
-        let cols = await apiClient().get('/column',{params:{id_model: model.id}}).catch(e => message.error({key:'column',content:'error content'}));
+        let cols = await apiClient().get('/column',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'column',content:'error content'}));
         if (_.size(cols?.data)>0) {
             console.log('cols',cols.data)
             // setColumns(cols.data);
@@ -160,97 +170,77 @@ const Comparison = () => {
     }
 
     const onValuesChange = async(change,all) => {
+        console.log('change',all)        
         if (change?.series) {
             setSelectedSeries(_.values(all.series))
-            
             let k = _.head(_.keys(change.series))
             let v = _.head(_.values(change.series))
-            console.log(change.series, k, v)
             await getValue(k, v);
         }
     }
 
-    useEffect(() => {
-      (async()=>{
-        if (_.size(series)==0 && model) {
-            await getSeries();
-            await getColumn();
-        }
-      })()
-    }, [series])
+    const addColumn = () => {
+        let index = parseInt(_.size(tableColumn));
+        let tabletemp = _.cloneDeep(tableColumn);
+        let temp = tabletemp[1];
+        temp.dataIndex = 'compare'+index;
+        temp.key = 'compare'+index;
+        temp.title = (
+            <Form.Item name={['series',(index)+'']}>
+                <Select 
+                    filterOption={filterOption}
+                    options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
+                    placeholder="Modal" 
+                    showSearch 
+                    style={{width:'100%'}} />
+            </Form.Item>
+        )
+        console.log('check',index+'', temp)
+        setTableColumn([
+            ...tableColumn,
+            temp
+        ])
+    }
 
     useEffect(() => {
-      console.log('dataSource',dataSource)
-    }, [dataSource])
+        if (optionSeries) {
+            setTableColumn(defaultTableColumn);
+        }
+    }, [optionSeries])
+    
     
 
     useEffect(() => {
-      console.log('model',model)
-      if (!model) {
-        router.push('/specandcompair?error=nomodel')
-      }
-    }, [model])
+        (async()=>{
+            if (selectModel) {
+                // form.resetFields();
+                await getSeries();
+                await getColumn();
+            }
+        })()
+    }, [selectModel])
     
     
   return (
     <>
-        <Layout>
-            <Content style={{ padding: '0 50px' }}>
-                <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
-                    <Sider
-                        style={{
-                        background: colorBgContainer,
-                        }}
-                        width={200}
-                    >
-                        <Menu
-                        mode="inline"
-                        defaultSelectedKeys={['comparison']}
-                        // defaultOpenKeys={['sub1']}
-                        style={{
-                            height: '100%',
-                        }}
-                        items={items2}
-                        />
-                    </Sider>
-                    <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                        <Form form={form} onValuesChange={onValuesChange}>
-                        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                            <Breadcrumb
-                                items={[
-                                {
-                                    href: '/',
-                                    title: <HomeOutlined />,
-                                },
-                                {
-                                    href: '/datacenter',
-                                    title: (
-                                    <>
-                                        <UserOutlined />
-                                        <span>Data center</span>
-                                    </>
-                                    ),
-                                },
-                                {
-                                    href: '/specandcompair',
-                                    title: 'Specification & Comparison',
-                                },
-                                {
-                                    title: 'Comparison',
-                                },
-                                ]}
-                            />
-                            <Row>
-                                <Col span={24}>
-                                    <Table bordered dataSource={dataSource} columns={tableColumn} pagination={{pageSize: _.size(dataSource), hideOnSinglePage:true}} />
-                                </Col>
-                            </Row>
-                        </Space>
-                        </Form>
-                    </Content>
-                </Layout>
-            </Content>
-        </Layout>
+        <Row style={{marginBottom:'5px'}}>
+            <Col span={12}>
+                <MyModel />
+            </Col>
+            <Col span={12} style={{textAlign:'right'}}>
+                <Space>
+                    <Button onClick={()=>router.reload()}>Reset</Button>
+                    <Button disabled={_.size(tableColumn)>=6} onClick={()=>addColumn()}>Add Column</Button>
+                </Space>
+            </Col>
+        </Row>
+        <Row>
+            <Col span={24}>
+                <Form form={form} onValuesChange={onValuesChange}>
+                    <Table bordered dataSource={dataSource} columns={tableColumn} pagination={{pageSize: _.size(dataSource), hideOnSinglePage:true}} />
+                </Form>
+            </Col>
+        </Row>
     </>
   )
 }
