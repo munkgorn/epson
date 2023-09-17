@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -62,16 +62,28 @@ const columns = [
     key: 'part',
   },
 ];
-const data = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
-];
+const data = [];
 export default function Index() {
+  const [itemsModel, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/manual/listModel')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const transformedItems = data.map(item => ({
+          key: item.model_name,
+          label: item.model_name,
+          manual: item.manual,
+          diagram: item.diagram,
+          nvram: item.nvram,
+        }));
+        setItems(transformedItems);
+      });
+  }, []);
+  const handleModelSelect = item => {
+    setSelectedItem(item);
+  };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -133,16 +145,24 @@ export default function Index() {
                           <b>Model</b>
                         </p>
                         <Space wrap>
-                          <Button type="primary">SC-F6330</Button>
-                          <Button type="primary">SC-F6430</Button>
+                          {itemsModel.map(item => (
+                            <Button key={item.key} 
+                            onClick={() => handleModelSelect(item.nvram)} >
+                              {item.label}
+                            </Button>
+                          ))}
                         </Space>
                       </Col>
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                          Download SC-F6430
-                        </Button>
+                      {selectedItem && (
+                          <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
+                            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                            Download
+                            </Button>
+                          </a>
+                        )}
                       </Col>
                     </Row>
                   </Card>

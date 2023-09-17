@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -112,13 +112,13 @@ const columns = [
   },
 ];
 const data = [
-  {
-    key: '1',
-    item: 'Total print page',
-    currentValue: 657,
-    unit: 'Sheet',
-    limit: '400,000',
-  },
+  // {
+  //   key: '1',
+  //   item: 'Total print page',
+  //   currentValue: 657,
+  //   unit: 'Sheet',
+  //   limit: '400,000',
+  // },
 ];
 const columnsResult = [
   {
@@ -143,13 +143,13 @@ const columnsResult = [
   },
 ];
 const dataResult = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
+  // {
+  //   key: '1',
+  //   no: '1',
+  //   symptom: 'Total Print 136,000 ㎡',
+  //   remedy: 'Replace Print Head',
+  //   part: 'FA61002 “Print Head”',
+  // },
 ];
 const { Dragger } = Upload;
 const { Meta } = Card;
@@ -164,39 +164,71 @@ const items = [
     ),
   },
 ];
-
+const props = {
+  name: 'file',
+  multiple: false,
+  action: '/api/upload',
+  method: 'post',
+};
+const propsCalculate = {
+  name: 'file',
+  multiple: false,
+  action: '/api/analytic/readfile',
+  method: 'post',
+};
 export default function Index() {
-  const [responseData, setResponseData] = useState([]);
+  const [dataResult, setResponseData] = useState([]);
+  const [dataResultDetail, setResponseDataDetail] = useState([]);
+  const [itemsModel, setItems] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(null);
+  useEffect(() => {
+    fetch('http://localhost:3000/api/analytic/list')
+      .then(response => response.json())
+      .then(data => {
+        const transformedItems = data.map(item => ({
+          key: item.model,
+          label: item.model,
+        }));
+        setItems(transformedItems);
+        setSelectedModel('EB-FH52'); // hard code
+      });
+  }, []);
+  
+  const handleModelSelect = model => {
+    setSelectedModel(model);
+  };
 
+  axios.defaults.debug = false;
   const handleUpload = async (file) => {
+    console.log(file);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      console.log('start send axios');
-    
-      const response = await axios.post(props.action, formData);
-      setResponseData(response);
-      console.log('get data');
-      console.log(response);
-      if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        // console.log(response.data.data);
-        setResponseData(response.data.data); // Update state with response data
-      } else {
-        console.log('Empty response data or invalid format');
-        setResponseData([]); // Set an empty array if no response data or invalid format
-      }
+        const params = {
+          filename:file.name,
+          model: selectedModel
+        };
+        axios.post('/api/analytic/readfile', params)
+        .then((response) => {
+          // console.log('Response:', response.data);
+          setResponseData(response.data.errorData);
+          setResponseDataDetail(response.data.information);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      
     } catch (error) {
-      console.error(error);
-      setResponseData([]); // Set an empty array if an error occurs
+      console.error('API Request Error:', error);
+      setResponseData([]); // Set an empty array if there's an error in making the API request
     }
-
+  
     console.log('end send axios');
   };
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
-  const filteredResponseData = responseData.filter(row => row.length > 1);
+
+  const filteredResponseData = dataResult.filter(row => row.length > 0);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -248,23 +280,31 @@ export default function Index() {
                     </Col>
                   </Row>
                   <Card>
-                    <Row justify="center">
+                  <Row justify="center">
                       <Col span={20} style={{ margin: '10px' }}>
                         <p>
                           <b>Model</b>
                         </p>
                         <Dropdown
-                          menu={{
-                            items,
-                          }}
+                          overlay={
+                            <Menu>
+                              {itemsModel.map(item => (
+                                <Menu.Item key={item.key}>
+                                  <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
+                                </Menu.Item>
+                              ))}
+                            </Menu>
+                          }
                         >
-                          <a onClick={(e) => e.preventDefault()}>
+                          <a onClick={e => e.preventDefault()}>
                             <Space>
-                              Select
-                              <DownOutlined />
+                              Select <DownOutlined />
                             </Space>
                           </a>
                         </Dropdown>
+                        {selectedModel && (
+                          <p>Selected Model: {selectedModel}</p>
+                        )}
                       </Col>
                     </Row>
                     <Row justify="center">

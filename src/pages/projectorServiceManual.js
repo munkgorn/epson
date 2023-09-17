@@ -123,8 +123,6 @@ export default function Index() {
                         <p>
                           <b>Model</b>
                         </p>
-                        {/* <a onClick={() => handleModelSelect(item.key)}>{item.label}</a> */}
-                        {/* <a onClick={() => handleModelSelect(item.key)}>{item.label}</a> */}
                         <Space wrap>
                         {itemsModel.map(item => (
                             <Button type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
