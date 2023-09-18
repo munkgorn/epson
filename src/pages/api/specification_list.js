@@ -4,11 +4,11 @@ import _ from  'lodash';
 
 export default async function handler(req, res) {
     try {
-    const table = 'es_cc_val';
+    const table = 'es_cc_specification';
     const {method,data,params} = decode(req.body)
 
     if (method=='get') {
-        let sql = 'SELECT * FROM '+table;
+        let sql = 'SELECT * FROM es_cc_specification';
         let objParam = [];
         if (_.size(params)>0) {
             sql += ' WHERE '
@@ -28,10 +28,10 @@ export default async function handler(req, res) {
         console.log('params', objParam)
 
         const connection = await connectDb();
-        const [result] = await connection.query(sql, [objParam]);
+        const [result] = await connection.query(sql, objParam);
         
         connection.end();
-        // console.log(result)
+        console.log(result)
         res.status(200).json({data: encode(result)})
     } else {
         res.status(405).send('Method not allowed')
