@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   const { model, filename } = req.body;
 
-  const filePath = 'public/upload/' + filename;
+  const filePath = 'public/upload/projector/' + filename;
   const fileBuffer = fs.readFileSync(filePath);
 
   const iconv = require('iconv-lite');
