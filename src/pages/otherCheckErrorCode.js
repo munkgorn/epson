@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -62,9 +62,52 @@ const data = [
 ];
 
 export default function Index() {
+  const [itemsModel, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  useEffect(() => {
+    fetch('/api/manual/listModelRips')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const transformedItems = data.map(item => ({
+          key: item.model_name,
+          label: item.model_name,
+          manual: item.manual,
+          diagram: item.diagram,
+          typeModel:'RIPs'
+        }));
+        setItems(transformedItems);
+      });
+  }, []);
+  const handleModelSelect = item => {
+    setSelectedItem(item);
+  };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const [model, setModel] = useState('');
+  const [errorCode, setErrorCode] = useState('');
+  const [tableData, setTableData] = useState([]);
+  const handleModelSelectModel = async (errorCode) => {
+    setErrorCode(errorCode);
+    try {
+      const response = await axios.post('/api/errorCode/find', {
+        model: selectedItem,
+        errorCode: errorCode,
+        type:'RIPs'
+      });
+      const responseData = response.data.map(item => ({
+        key: item.id, // Unique key for each row
+        symptom: item.error_name,
+        remedy: item.remedy,
+        part: item.part_check,
+      }));
+      setTableData(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+    
+  };
   return (
     <>
       <Layout>
@@ -116,30 +159,42 @@ export default function Index() {
                     </Col>
                   </Row>
                   <Card>
-                    <Row justify="center">
+                  <Row justify="center">
                       <Col span={20} style={{ margin: '10px' }}>
                         <p>
                           <b>Model</b>
                         </p>
                         <Space wrap>
-                          <Button type="primary">SC-F6330</Button>
-                          <Button type="primary">SC-F6430</Button>
+                          {itemsModel.map(item => (
+                            <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
+                            onClick={() => handleModelSelect(item.label)}
+                            className={selectedItem === item.label ? 'warning-button' : ''} >
+                              {item.label}
+                            </Button>
+                          ))}
                         </Space>
-                      </Col>
+                      </Col>  
                     </Row>
                     <Row justify="center">
                       <Col span={20} style={{ margin: '10px' }}>
-                        <Search placeholder="Enter number Error Code: " enterButton="Search" size="large" />
+                      <Search
+                          placeholder="Enter number Error Code: "
+                          enterButton="Search"
+                          size="large"
+                          // Handle the input value as needed
+                          onChange={(e) => handleModelSelectModel(e.target.value)}
+                          value={errorCode}
+                        />
                       </Col>
                     </Row>
                     <Row justify="center" style={{ margin: '20px' }}>
                       <Col span={20} style={{ margin: '10px' }}>
-                      <Table columns={columns} dataSource={data} />
+                      <Table columns={columns} dataSource={tableData} />
                       </Col>
                     </Row>
                   </Card>
                 </Space>
-              </Content>
+            </Content>
           </Layout>
         </Content>
       </Layout>

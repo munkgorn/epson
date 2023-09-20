@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 const storage = multer.diskStorage({
-  destination: 'public/upload',
+  destination: 'public/upload/projector',
   filename: function (req, file, cb) {
     const fileName = `${file.originalname}`;
     cb(null, fileName);
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         throw new Error('No file uploaded.');
       }
       const { filename } = req.file;
-      const filePath = path.join('public/upload', filename);
+      const filePath = path.join('public/upload/projector', filename);
       res.status(200).json({ status:'success',filePath:filePath });
     } catch (err) {
       console.error(err);

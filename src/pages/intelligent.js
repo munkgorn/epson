@@ -121,7 +121,7 @@ export default function index() {
                         </a>
                     </Col>
                     <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/otherCheckErrorCode">
+                        <a href="/otherCheckErrorCodeLIJ">
                             <Card
                                 hoverable
                                 style={{

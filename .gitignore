@@ -4,7 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
-
+public/upload/manual/*
+public/upload/diagram/*
+public/upload/lfp/*
+public/upload/projector/*
 # testing
 /coverage
 
@@ -34,3 +37,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .history
+
+env.sit.local
+.env.local
