@@ -9,163 +9,120 @@ import {
 	AutoComplete,
 	Input,
 	message,
+	Form,
+	Select
 } from "antd";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { apiClient } from "../utils/apiClient";
 import { useRouter } from "next/router";
 import _ from "lodash";
+import MyModel from "@/components/myModel";
+import { useRecoilState } from "recoil";
+import { modelsState, selectModelState } from "@/store/data";
+import Link from "next/link";
 const { Meta } = Card;
 
-const getRandomInt = (max, min = 0) =>
-	Math.floor(Math.random() * (max - min + 1)) + min;
-const searchResult = async (query) => {
-	console.log(query);
-	const resultModel = await apiClient().get("/model", {
-		params: {
-			model_name: "*" + query + "*",
-		},
-	});
-	console.log(resultModel);
-	return [
-		{
-			value: "munkgorn",
-			label: (
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-					}}
-				>
-					<span>
-						Found {query} on {"munkgorn"}
-					</span>
-					<span>{1} results</span>
-				</div>
-			),
-		},
-	];
-};
 export default function Index() {
+	const [form] = Form.useForm();
 	const [options, setOptions] = useState([]);
-	const [series, setSeries] = useState([]);
+    const [optionSeries, setOptionSeries] = useState([])
 	const router = useRouter();
-	const handleSearch = (value) => {
-		setOptions(value ? searchResult(value) : []);
-	};
-	const onSelect = (value) => {
-		console.log("onSelect", value);
-	};
-	const getModels = async () => {
-		message.loading({
-			key: "init",
-			content: "loading model...",
-		});
-		const result = await apiClient().get("/model");
-		setOptions(result?.data);
-		if (_.size(result?.data) > 0) {
-			message.success({
-				key: "init",
-				content: "load models success...",
-			});
-		} else {
-			message.error({
-				key: "init",
-				content: "cannot load models",
-			});
+	const [nowModel, setNowModel] = useRecoilState(selectModelState);
+	const [files, setFiles] = useState([]);
+	
+    const filterOption = (input, option) => {
+        let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
+        let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
+        return _.startsWith(labelLow, inputLow) ||inputLow==labelLow
+    }
+
+	const onValuesChange = async (change, all) => {
+		console.log(change)
+		if (change?.series) {
+			await getListSeries(false,true,change.series)
 		}
-	};
-	const getModel = async (modalname) => {
-		message.loading({
-			key: "init",
-			content: "loading model...",
-		});
-		const result = await apiClient().get("/model", {
-			params: { model_name: modalname },
-		});
-		console.log("model", _.head(result.data));
-		message.success({
-			key: "init",
-			content: "load model success",
-		});
-		return _.result(result, "data[0]");
-	};
-	const getSeries = async (modelID) => {
-		console.log("getseries", modelID);
-		if (modelID) {
-			message.success({
-				key: "init",
-				content: "loading series...",
-			});
-			const result = await apiClient().get("/series", {
-				params: { id_model: modelID },
-			});
-			console.log("sereies", result.data);
-			setSeries(result.data);
-			message.success({
-				key: "init",
-				content: "load series success",
-			});
-		} else {
-			message.error("Not found model id");
-		}
-	};
-	useEffect(() => {
-		(async () => {
-			if (_.size(options) == 0) {
-				await getModels();
+	}
+
+	const getListSeries = async (saveOption=true, listFile=false, thisSeries=undefined) => {
+		try {
+			let params = {
+				type: process.env.NEXT_PUBLIC_MANUAL,
+				model: nowModel?.folder,
+				// series: series
 			}
-		})();
-	}, [options]);
+			if (thisSeries) {
+				params.series = thisSeries
+			}
+			let result = await apiClient().get('/file/list', {params})
+			if (saveOption) {
+				let temp = _.map(result?.data, val => {
+					let text = _.split(val, '_');
+					let thisVal = _.head(text);
+					return {label:thisVal, value:thisVal}
+					// if (!_.isUndefined(_.find(temp, {label:thisVal}))) {
+					// 	let index = _.findIndex(temp, {label:thisVal});
+					// 	console.log('has', index)
+					// 	_.update(temp, '[0].value', value => [...value, val])
+					// } else {
+					// 	temp.push({label: thisVal, value: [val]});
+					// }
+					
+				})
+				temp = _.uniqBy(temp, 'label')
+				temp = _.orderBy(temp, 'label', 'asc')
+				console.log(temp,'temp')
+				setOptionSeries(temp)
+			}
+			if (listFile) {
+				setFiles(result?.data);
+			}
+			console.log(result)
+		} catch (e) {
+			message.error('Cannot read this folder '+nowModel?.model_name+' '+nowModel?.folder+', Please contact.', 5)
+		}
+	}
 
 	useEffect(() => {
-		(async () => {
-			if (router?.query?.model) {
-				let result = await getModel(router?.query?.model);
-
-				if (result?.id) {
-					console.log(result.id);
-					await getSeries(result.id);
-				}
+		(async()=>{
+			if (nowModel) {
+				console.log('nowModel',nowModel)
+				await getListSeries(true, false);
 			}
-		})();
-	}, [router?.query]);
+		})()
+	}, [nowModel])
+	
 
 	return (
 		<>
       <Row justify="center">
+		<Col span={24}>
+			<MyModel />
+		</Col>
         <Col span={24}>
           <p>
             <b>Model</b>
           </p>
-          <AutoComplete
-            style={{
-              width: 300,
-            }}
-            options={options}
-            onSelect={onSelect}
-            onSearch={handleSearch}
-            value={router?.query?.model}
-          >
-            <Input.Search
-              size="large"
-              placeholder="input here"
-              enterButton
-            />
-          </AutoComplete>
+          
+			<Form form={form} onValuesChange={onValuesChange}>
+				<Form.Item name={"series"} style={{margin:0}}>
+					<Select
+						filterOption={filterOption}
+						options={optionSeries}
+						placeholder="Search Modal"
+						showSearch
+						allowClear
+						style={{ width: "auto", minWidth: '200px' }}
+					/>
+				</Form.Item>
+			</Form>
         </Col>
         <Col span={24}>
           <p>
             <b>Items</b>
           </p>
-          {_.size(series) > 0 ? (
-            _.map(series, (ser, i) => (
-              <p>
-                {++i}. {ser.series_name}
-              </p>
-            ))
-          ) : (
-            <p></p>
-          )}
+          {_.size(files) > 0 && _.map(files, f => (
+		  	<p><Link href={process.env.NEXT_PUBLIC_LOADFILE+process.env.NEXT_PUBLIC_MANUAL+'/'+nowModel?.folder+'/'+f} target="_blank">{f}</Link></p>
+		  ))}
         </Col>
       </Row>
 		</>
