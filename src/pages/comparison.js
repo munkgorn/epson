@@ -47,8 +47,22 @@ const Comparison = () => {
     const [optionSeries, setOptionSeries] = useState([])
     const [optionSeriesRemaining, setOptionSeriesRemaining] = useState([])
     const [form] = Form.useForm();
-    const [selectedSeries, setSelectedSeries] = useState([]);
+    const [selectedSeries, setSelectedSeries] = useState({
+        1: null,
+        2: null,
+        3: null,
+        4: null,
+        5: null,
+    });
+    const [keySelect, setKeySelect] = useState(0);
     const [dataSource, setDataSource] = useState([])
+
+    const renderSelect = () => <Select 
+                                    filterOption={filterOption}
+                                    options={optionSeriesRemaining} 
+                                    placeholder="Modal" 
+                                    showSearch 
+                                    style={{width:'100%'}} />
     
     const filterOption = (input, option) => {
         let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
@@ -65,46 +79,30 @@ const Comparison = () => {
         {
             title: (
                 <Form.Item name={['series','1']}>
-                    <Select 
-                        filterOption={filterOption}
-                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
-                        placeholder="Modal" 
-                        showSearch 
-                        
-                        style={{width:'100%'}} />
+                    {renderSelect()}
                 </Form.Item>
             ),
             dataIndex:'compare1',
             key: 'compare1'
         },
-        {
-            title: (
-                <Form.Item name={['series','2']}>
-                    <Select 
-                        filterOption={filterOption}
-                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
-                        placeholder="Modal" 
-                        showSearch 
-                        style={{width:'100%'}} />
-                </Form.Item>
-            ),
-            dataIndex:'compare2',
-            key: 'compare2'
-        },
-        {
-            title: (
-                <Form.Item name={['series','3']}>
-                    <Select 
-                        filterOption={filterOption}
-                        options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
-                        placeholder="Modal" 
-                        showSearch 
-                        style={{width:'100%'}} />
-                </Form.Item>
-            ),
-            dataIndex:'compare3',
-            key: 'compare3'
-        },
+        // {
+        //     title: (
+        //         <Form.Item name={['series','2']}>
+        //             {renderSelect()}
+        //         </Form.Item>
+        //     ),
+        //     dataIndex:'compare2',
+        //     key: 'compare2'
+        // },
+        // {
+        //     title: (
+        //         <Form.Item name={['series','3']}>
+        //             {renderSelect()}
+        //         </Form.Item>
+        //     ),
+        //     dataIndex:'compare3',
+        //     key: 'compare3'
+        // },
     ]
     const [tableColumn, setTableColumn] = useState(defaultTableColumn)
 
@@ -121,8 +119,8 @@ const Comparison = () => {
         let resultSeries = await apiClient().get('/series',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'series',content:'error series'}));
         if (_.size(resultSeries?.data)>0) {
             setSeries(resultSeries.data)
-            console.log('optionseries',resultSeries.data)
             setOptionSeries(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
+            setOptionSeriesRemaining(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
             setSelectedSeries([])
             
             message.success({key:'series',content:'load series succes'})
@@ -133,8 +131,6 @@ const Comparison = () => {
         message.loading({key:'column',content:'loading column...'});
         let cols = await apiClient().get('/column',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'column',content:'error content'}));
         if (_.size(cols?.data)>0) {
-            console.log('cols',cols.data)
-            // setColumns(cols.data);
             setDataSource(_.map(cols.data, v => ({
                 key:v.id,
                 head: v.column_name,
@@ -149,16 +145,7 @@ const Comparison = () => {
     const getValue = async(key,idseries) => {
         message.loading({key:'series',content:'loading series...'});
         let result = await apiClient().get('/value',{params:{id_series: idseries}}).catch(e => message.error({key:'series',content:'error content'}));
-        console.log(result)
         if (_.size(result?.data)>0) {
-            console.log('data',result.data)
-            // setValues({
-            //     ...values,
-            //     [key]: result.data
-            // });
-
-            console.log(dataSource)
-            
             setDataSource(_.map(dataSource, v => {
                 return {
                     ...v,
@@ -170,14 +157,27 @@ const Comparison = () => {
     }
 
     const onValuesChange = async(change,all) => {
-        console.log('change',all)        
         if (change?.series) {
-            setSelectedSeries(_.values(all.series))
             let k = _.head(_.keys(change.series))
             let v = _.head(_.values(change.series))
             await getValue(k, v);
+            setSelectedSeries({
+                ...selectedSeries,
+                ...change?.series
+            })
         }
     }
+
+    useEffect(() => {
+        setOptionSeriesRemaining(_.filter(optionSeries, f => !_.includes(_.values(selectedSeries), f.value)));
+    }, [selectedSeries])
+    
+
+    useEffect(()=>{
+        console.log('selectedSeries',selectedSeries)
+        console.log('optionSeries',optionSeries)
+        console.log('optionSeriesRemaining',optionSeriesRemaining)
+    },[selectedSeries, optionSeries, optionSeriesRemaining])
 
     const addColumn = () => {
         let index = parseInt(_.size(tableColumn));
@@ -189,7 +189,7 @@ const Comparison = () => {
             <Form.Item name={['series',(index)+'']}>
                 <Select 
                     filterOption={filterOption}
-                    options={_.filter(optionSeries, f => !_.includes(selectedSeries,f.value))} 
+                    options={optionSeriesRemaining} 
                     placeholder="Modal" 
                     showSearch 
                     style={{width:'100%'}} />
@@ -202,14 +202,19 @@ const Comparison = () => {
         ])
     }
 
+    const resetAll = async () => {
+        await getSeries();
+        await getColumn();
+        setKeySelect(1);
+        form.resetFields();
+    }
+
     useEffect(() => {
         if (optionSeries) {
             setTableColumn(defaultTableColumn);
         }
     }, [optionSeries])
     
-    
-
     useEffect(() => {
         (async()=>{
             if (selectModel) {
@@ -229,7 +234,7 @@ const Comparison = () => {
             </Col>
             <Col span={12} style={{textAlign:'right'}}>
                 <Space>
-                    <Button onClick={()=>router.reload()}>Reset</Button>
+                    <Button onClick={async()=>await resetAll()}>Reset</Button>
                     <Button disabled={_.size(tableColumn)>=6} onClick={()=>addColumn()}>Add Column</Button>
                 </Space>
             </Col>
@@ -237,7 +242,9 @@ const Comparison = () => {
         <Row>
             <Col span={24}>
                 <Form form={form} onValuesChange={onValuesChange}>
-                    <Table bordered dataSource={dataSource} columns={tableColumn} pagination={{pageSize: _.size(dataSource), hideOnSinglePage:true}} />
+                    {
+                        optionSeriesRemaining && <Table bordered dataSource={dataSource} columns={tableColumn} pagination={{pageSize: _.size(dataSource), hideOnSinglePage:true}} />
+                    }
                 </Form>
             </Col>
         </Row>
