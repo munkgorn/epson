@@ -1,142 +1,68 @@
-import React from 'react';
-import{  Col, Divider, Row  } from 'antd';
-import { Card, Space } from 'antd';
-import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
-import { Breadcrumb } from 'antd';
+import React, {useState,useEffect,useContext} from "react";
+import {useRecoilState} from 'recoil';
+import Link from 'next/link';
+import { useRouter } from "next/router";
+import { Card, Space,Col, Row, Breadcrumb, message,Button } from "antd";
+import {
+	HomeOutlined,
+	UserOutlined,
+} from "@ant-design/icons";
+import { apiClient } from '../utils/apiClient';
+import _ from 'lodash';
+import MyModel from "@/components/myModel";
+import { selectModelState } from "@/store/data";
+
 const { Meta } = Card;
-export default function index() {
-  return (
-    <>
-        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-            <Row justify="center">
-                <Col span={20}>
-                <Breadcrumb
-                    items={[
-                    {
-                        href: '/home',
-                        title: <HomeOutlined />,
-                    },
-                    {
-                        href: '/datacenter',
-                        title: (
-                        <>
-                            <UserOutlined />
-                            <span>Data Center</span>
-                        </>
-                        ),
-                    },
-                    {
-                        title: 'Specification & Comparison',
-                    },
-                    ]}
-                />
-                </Col>
-            </Row>
-            <Card>
-                <Row justify="center">
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                    textAlign: 'center',
-                                    height:320,
-                                }}
-                                cover={<img alt="example" src="images/m1.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="Inkjet" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                height:320,
-                                }}
-                                cover={<img alt="example" src="images/m2.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="BIJ" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                height:320,
-                                }}
-                                cover={<img alt="example" src="images/m3.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="Dot Matrix" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                </Row>
-                <Row justify="center">
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                    textAlign: 'center',
-                                    height:320,
-                                }}
-                                cover={<img alt="example" src="images/m4.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="Small Printer" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                height:320,
-                                }}
-                                cover={<img alt="example" src="images/m5.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="Projector" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                    <Col span={5}  style={{ margin: '10px' }}>
-                        <a href="/specification">
-                            <Card
-                                hoverable
-                                style={{
-                                textAlign: 'center',
-                                height:320,
-                                }}
-                                cover={<img alt="example" src="images/m6.png" />}
-                            >
-                                <div style={{ marginTop: 'auto' }}>
-                                    <Meta title="LFP" description="" />
-                                </div>
-                            </Card>
-                        </a>
-                    </Col>
-                </Row>
-            </Card>
-        </Space>
-    </>
-  )
-}
+
+const Specandcompair = () =>  {
+	const [selectModel,setSelectModel] = useRecoilState(selectModelState);
+	const router = useRouter();
+    const [lists, setLists] = useState([]);
+
+    const getLists = async () => {
+        message.loading({key:'init',content:'loading...'})
+        const models = await apiClient().get('/model');
+        console.log(models);
+        setLists(models.data)
+        if (_.size(models?.data)>0) {
+            message.success({key:'init',content:'Load model success'})
+        } else {
+            message.error({key:'inti',content:'Cannot load model'});
+        }
+    }
+
+    useEffect(() => {
+        (async()=>{
+            if (_.size(lists)==0) {
+                await getLists();
+            }
+        })()
+    }, [lists])
+
+	return (
+		<>
+			{/* <MyModel /> */}
+			<Card>
+				<Row justify="center">
+				{
+					_.size(lists)>0 && _.map(lists, val => (
+						<Col span={8} >
+							<Button type="link" onClick={()=>{
+								setSelectModel(val);
+								// modal.destroy();
+								// setIsModalOpen(false);
+								// router.push('/specification')
+							}} style={{width:'100%'}}>
+								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} />}>
+									<Meta title={val.model_name} />
+								</Card>
+							</Button>
+						</Col>
+					))
+				}
+				</Row>
+			</Card>
+		</>
+	);
+};
+export default Specandcompair;

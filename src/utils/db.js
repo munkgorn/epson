@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
+import _ from 'lodash';
 
 // Load environment-specific configuration
 dotenv.config({ path: process.env.CONFIG_ENV });

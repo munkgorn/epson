@@ -1,104 +1,130 @@
-import React from 'react';
-import{  Col, Divider, Row  } from 'antd';
-import { Card, Space } from 'antd';
-import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
-import { Breadcrumb } from 'antd';
+import React, { useState, useEffect } from "react";
+import {
+	Breadcrumb,
+	Card,
+	Space,
+	Col,
+	Divider,
+	Row,
+	AutoComplete,
+	Input,
+	message,
+	Form,
+	Select
+} from "antd";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { apiClient } from "../utils/apiClient";
+import { useRouter } from "next/router";
+import _ from "lodash";
+import MyModel from "@/components/myModel";
+import { useRecoilState } from "recoil";
+import { modelsState, selectModelState } from "@/store/data";
+import Link from "next/link";
 const { Meta } = Card;
-import { AutoComplete, Input } from 'antd';
-import { useState } from 'react';
-const getRandomInt = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
-const searchResult = (query) =>
-  new Array(getRandomInt(5))
-    .join('.')
-    .split('.')
-    .map((_, idx) => {
-      const category = `${query}${idx}`;
-      return {
-        value: category,
-        label: (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span>
-              Found {query} on{' '}
-              <a
-                href={`https://s.taobao.com/search?q=${query}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {category}
-              </a>
-            </span>
-            <span>{getRandomInt(200, 100)} results</span>
-          </div>
-        ),
-      };
-    });
-export default function index() {
-    const [options, setOptions] = useState([]);
-  const handleSearch = (value) => {
-    setOptions(value ? searchResult(value) : []);
-  };
-  const onSelect = (value) => {
-    console.log('onSelect', value);
-  };
-  return (
-    <>
-        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-            <Row justify="center">
-                <Col span={20}>
-                <Breadcrumb
-                    items={[
-                    {
-                        href: '/home',
-                        title: <HomeOutlined />,
-                    },
-                    {
-                        href: '/datacenter',
-                        title: (
-                        <>
-                            <UserOutlined />
-                            <span>Data Center</span>
-                        </>
-                        ),
-                    },
-                    {
-                        title: 'Knowledge Base',
-                    },
-                    ]}
-                />
-                </Col>
-            </Row>
-            <Card>
-                <Row justify="center">
-                    <Col span={20}  style={{ margin: '10px' }}>
-                        <p><b>Information</b></p>
-                        <AutoComplete
-                        style={{
-                            width: 300,
-                        }}
-                        options={options}
-                        onSelect={onSelect}
-                        onSearch={handleSearch}
-                        >
-                        <Input.Search size="large" placeholder="input here" enterButton />
-                        </AutoComplete>
-                    </Col>
-                </Row>
-                <Row justify="center">
-                    <Col span={20}  style={{ margin: '10px' }}>
-                        <p><b>Items</b></p>
-                        <p>1. การตั้งค่า WiFi</p>
-                        <p>2. การ Reset Wifi</p>
-                    </Col>
-                </Row>
-            </Card>
-        </Space>
-    </>
-  )
+
+export default function Index() {
+	const [form] = Form.useForm();
+	const [options, setOptions] = useState([]);
+    const [optionSeries, setOptionSeries] = useState([])
+	const router = useRouter();
+	const [nowModel, setNowModel] = useRecoilState(selectModelState);
+	const [files, setFiles] = useState([]);
+	
+    const filterOption = (input, option) => {
+        let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
+        let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
+        return _.startsWith(labelLow, inputLow) ||inputLow==labelLow
+    }
+
+	const onValuesChange = async (change, all) => {
+		console.log(change)
+		if (change?.series) {
+			await getListSeries(false,true,change.series)
+		}
+	}
+
+	const getListSeries = async (saveOption=true, listFile=false, thisSeries=undefined) => {
+		try {
+			let params = {
+				type: process.env.NEXT_PUBLIC_KNOWLEDGE,
+				model: nowModel?.folder,
+				// series: series
+			}
+			if (thisSeries) {
+				params.series = thisSeries
+			}
+			let result = await apiClient().get('/file/list', {params})
+			if (saveOption) {
+				let temp = _.map(result?.data, val => {
+					let text = _.split(val, '_');
+					let thisVal = _.head(text);
+					return {label:thisVal, value:thisVal}
+					// if (!_.isUndefined(_.find(temp, {label:thisVal}))) {
+					// 	let index = _.findIndex(temp, {label:thisVal});
+					// 	console.log('has', index)
+					// 	_.update(temp, '[0].value', value => [...value, val])
+					// } else {
+					// 	temp.push({label: thisVal, value: [val]});
+					// }
+					
+				})
+				temp = _.uniqBy(temp, 'label')
+				temp = _.orderBy(temp, 'label', 'asc')
+				console.log(temp,'temp')
+				setOptionSeries(temp)
+			}
+			if (listFile) {
+				setFiles(result?.data);
+			}
+			console.log(result)
+		} catch (e) {
+			message.error('Cannot read this folder '+nowModel?.model_name+' '+nowModel?.folder+', Please contact.', 5)
+		}
+	}
+
+	useEffect(() => {
+		(async()=>{
+			if (nowModel) {
+				console.log('nowModel',nowModel)
+				await getListSeries(true, false);
+			}
+		})()
+	}, [nowModel])
+	
+
+	return (
+		<>
+      <Row justify="center">
+		<Col span={24}>
+			<MyModel />
+		</Col>
+        <Col span={24}>
+          <p>
+            <b>Model</b>
+          </p>
+          
+			<Form form={form} onValuesChange={onValuesChange}>
+				<Form.Item name={"series"} style={{margin:0}}>
+					<Select
+						filterOption={filterOption}
+						options={optionSeries}
+						placeholder="Search Modal"
+						showSearch
+						allowClear
+						style={{ width: "100%" }}
+					/>
+				</Form.Item>
+			</Form>
+        </Col>
+        <Col span={24}>
+          <p>
+            <b>Items</b>
+          </p>
+          {_.size(files) > 0 && _.map(files, f => (
+		  	<p><Link href={process.env.NEXT_PUBLIC_LOADFILE+process.env.NEXT_PUBLIC_KNOWLEDGE+'/'+nowModel?.folder+'/'+f} target="_blank">{f}</Link></p>
+		  ))}
+        </Col>
+      </Row>
+		</>
+	);
 }

@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Col, Divider, Row } from 'antd';
 import { Card, Space, Button } from 'antd';
 import { AlertOutlined, SolutionOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
@@ -26,12 +27,15 @@ function getItem(label, key, icon, children) {
 const items2 = [
   getItem(
       <a href="/projector">Data Analytic</a>,
+      <a href="/projector">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
       <a href="/projectorServiceManual">Service Manual & Diagram</a>,
+      <a href="/projectorServiceManual">Service Manual & Diagram</a>,
       'serviceManual',
+      <LaptopOutlined />, 
       <LaptopOutlined />, 
     ),
 ];
@@ -89,7 +93,7 @@ export default function Index() {
                       <Breadcrumb
                         items={[
                           {
-                            href: '/home',
+                            href: '/',
                             title: <HomeOutlined />,
                           },
                           {
@@ -103,8 +107,10 @@ export default function Index() {
                           },
                           {
                             title: 'Projector',
+                            title: 'Projector',
                           },
                           {
+                            title: 'Service Manual & Diagram',
                             title: 'Service Manual & Diagram',
                           },
                         ]}
@@ -119,7 +125,7 @@ export default function Index() {
                         </p>
                         <Space wrap>
                         {itemsModel.map(item => (
-                            <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
+                            <Button type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
                         ))}
                         </Space>
                       </Col>  
