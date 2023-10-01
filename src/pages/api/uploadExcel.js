@@ -53,8 +53,14 @@ export default async function handler(req, res) {
                 // Extract data from the first row
                 const rowData = [];
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                const cellValue = cell.value;
-                const trimmedValue = cellValue ? cellValue.trim() : cellValue;
+                  const cellValue = cell.value;
+                  let trimmedValue = "";
+                  if (typeof cellValue === 'string') {
+                      trimmedValue = cellValue.trim();
+                      rowData.push(trimmedValue);
+                  } else {
+                      rowData.push(cellValue); // If not a string, push the value as it is
+                  }
                 rowData.push(trimmedValue);
                 });
                 type = rowData[0];
