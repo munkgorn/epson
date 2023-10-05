@@ -5,11 +5,11 @@ export default async function handler(req, res) {
 
   try {
     const {method,data,params} = decode(req.body)
-    if (method=='post') {
+    if (method=='put') {
       const connection = await connectDb();
       const [user] = await connection.query(
-        'SELECT * FROM ep_users WHERE username = ?',
-        [data?.username],
+        'UPDATE ep_users SET password = ?, date_changepassword = ? WHERE username = ?',
+        [data?.password, data?.date_changepassword, data?.username],
         function(err, results) {
           console.error(err);
           console.log(results)
