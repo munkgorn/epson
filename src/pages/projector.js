@@ -12,6 +12,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
+import { Select } from 'antd';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -98,7 +99,7 @@ export default function Index() {
           label: item.model,
         }));
         setItems(transformedItems);
-        setSelectedModel('EB-FH52'); 
+        //setSelectedModel('EB-FH52'); 
       });
   }, []);
   
@@ -117,8 +118,13 @@ export default function Index() {
         axios.post('/api/analytic/readfile', params)
         .then((response) => {
           // console.log('Response:', response.data);
-          setResponseData(response.data.errorData);
-          setResponseDataDetail(response.data.information);
+          if(response.data.errorData){
+            setResponseData(response.data.errorData);
+            setResponseDataDetail(response.data.information);
+          }
+          if (response.data.errorData.length === 0) {
+            message.error("Data empty");
+          }
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -132,10 +138,16 @@ export default function Index() {
     console.log('end send axios');
   };
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+  const onChange = (value) => {
+    setSelectedModel(value);
+    console.log(`Searched: ${value}`);
   };
-
+  const onSearch = (value) => {
+    setSelectedModel(value);
+    console.log(`Searched: ${value}`);
+  };
+  const filterOption = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
   const filteredResponseData = dataResult.filter(row => row.length > 0);
   const {
     token: { colorBgContainer },
@@ -143,121 +155,113 @@ export default function Index() {
 
   return (
     <> 
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
-            <Sider
+      <Layout style={{  background: colorBgContainer }}>
+        <Sider
+            style={{
+            background: colorBgContainer,
+            }}
+            width={200}
+        >
+            <Menu
+                mode="inline"
+                defaultSelectedKeys={['intrlligentDetail']}
                 style={{
-                background: colorBgContainer,
+                    height: '100%',
                 }}
-                width={200}
-            >
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['intrlligentDetail']}
-                    style={{
-                        height: '100%',
-                    }}
-                    items={items2}
-                />
-            </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                  <Row justify="center">
-                    <Col span={20}>
-                      <Breadcrumb
-                        items={[
-                          {
-                            href: '/',
-                            title: <HomeOutlined />,
-                          },
-                          {
-                            href: '/intelligent',
-                            title: (
-                              <>
-                                <UserOutlined />
-                                <span>Intelligent</span>
-                              </>
-                            ),
-                          },
-                          {
-                            title: 'Projector',
-                          },
-                          {
-                            title: 'Data Analytic',
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Card>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <p>
-                          <b>Model</b>
-                        </p>
-                        <Dropdown
-                          overlay={
-                            <Menu>
-                              {itemsModel.map(item => (
-                                <Menu.Item key={item.key}>
-                                  <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
-                                </Menu.Item>
-                              ))}
-                            </Menu>
-                          }
-                        >
-                          <a onClick={e => e.preventDefault()}>
-                            <Space>
-                              Select <DownOutlined />
-                            </Space>
-                          </a>
-                        </Dropdown>
-                        {selectedModel && (
-                          <p>Selected Model: {selectedModel}</p>
-                        )}
-                      </Col>
-                    </Row>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <Dragger
-                          {...props}
-                          onChange={(info) => {
-                            const { status, originFileObj } = info.file;
-                            if (status === 'done') {
-                              handleUpload(originFileObj);
-                            }
-                          }}
-                        >
-                          <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
-                          </p>
-                          <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                          <p className="ant-upload-hint">
-                            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-                            files.
-                          </p>
-                        </Dragger>
-                      </Col>
-                    </Row>
-                    
-                    
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columns} dataSource={dataResultDetail} />
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                      <Table columns={columnsResult} dataSource={dataResult} pagination={false} />
+                items={items2}
+            />
+        </Sider>
+        <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+              <Row justify="center">
+                <Col span={20}>
+                  <Breadcrumb
+                    items={[
+                      {
+                        href: '/',
+                        title: <HomeOutlined />,
+                      },
+                      {
+                        href: '/intelligent',
+                        title: (
+                          <>
+                            <UserOutlined />
+                            <span>Intelligent</span>
+                          </>
+                        ),
+                      },
+                      {
+                        title: 'Projector',
+                      },
+                      {
+                        title: 'Data Analytic',
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row>
+              <Card>
+                <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <p>
+                      <b>Model</b>
+                    </p>
+                    <Select
+                      showSearch
+                      placeholder="Select an item"
+                      optionFilterProp="children"
+                      onChange={onChange}
+                      onSearch={onSearch}
+                      filterOption={filterOption}
+                      style={{ width: 200 }}
+                    >
+                      {itemsModel.map(item => (
+                        <Option key={item.key} value={item.key}>
+                          {item.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <Dragger
+                     className="custom-upload"
+                      {...props}
+                      onChange={(info) => {
+                        const { status, originFileObj } = info.file;
+                        if (status === 'done') {
+                          handleUpload(originFileObj);
+                        }
+                      }}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                      <p className="ant-upload-hint">
+                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
+                        files.
+                      </p>
+                    </Dragger>
+                  </Col>
+                </Row>
+                
+                
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <Table columns={columns} dataSource={dataResultDetail} />
+                  </Col>
+                </Row>
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                  <Table columns={columnsResult} dataSource={dataResult} pagination={false} />
 
-                      </Col>
-                    </Row>
-                  </Card>
-                </Space>
-              </Content>
-          </Layout>
-        </Content>
+                  </Col>
+                </Row>
+              </Card>
+            </Space>
+          </Content>
       </Layout>
     </>
   );

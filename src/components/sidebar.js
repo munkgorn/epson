@@ -21,9 +21,10 @@ const Sidebar = () => {
             { key: 'manual', label: 'Manual', href: '/manualDetail' },
             { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
         ] },
-        { key: 'dataanalytic', label: 'Data Analytic', children: [
+        { key: 'dataanalytic', label: 'Data Analytic', href: '/intelligent' },
+        // { key: 'dataanalytic', label: 'Data Analytic', children: [
             // { key: 'manual', label: 'Manual', href: '/manual' },
-        ] },
+        // ] },
         { key:'divider', type: 'divider' },
         { key: 'logout', label: 'Logout', href: '/auth/logout' },
     ]

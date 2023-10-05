@@ -90,86 +90,82 @@ export default function Index() {
   
   return (
     <>
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
-            <Sider
+      <Layout style={{  background: colorBgContainer }}>
+        <Sider
+            style={{
+            background: colorBgContainer,
+            }}
+            width={200}
+        >
+            <Menu
+                mode="inline"
+                defaultSelectedKeys={['nvram']}
+                // defaultOpenKeys={['sub1']}
                 style={{
-                background: colorBgContainer,
+                    height: '100%',
                 }}
-                width={200}
-            >
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['nvram']}
-                    // defaultOpenKeys={['sub1']}
-                    style={{
-                        height: '100%',
-                    }}
-                    items={items2}
-                />
-            </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                  <Row justify="center">
-                    <Col span={20}>
-                      <Breadcrumb
-                        items={[
-                          {
-                            href: '/',
-                            title: <HomeOutlined />,
-                          },
-                          {
-                            href: '/intelligent',
-                            title: (
-                              <>
-                                <UserOutlined />
-                                <span>Intelligent</span>
-                              </>
-                            ),
-                          },
-                          {
-                            title: 'LFP',
-                          },
-                          {
-                            title: 'NVRAM Viewer',
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Card>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <p>
-                          <b>Model</b>
-                        </p>
-                        <Space wrap>
-                          {itemsModel.map(item => (
-                            <Button type="primary" key={item.key} 
-                            onClick={() => handleModelSelect(item.nvram)} >
-                              {item.label}
-                            </Button>
-                          ))}
-                        </Space>
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                      {selectedItem && (
-                          <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
-                            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                            Download
-                            </Button>
-                          </a>
-                        )}
-                      </Col>
-                    </Row>
-                  </Card>
-                </Space>
-              </Content>
-          </Layout>
-        </Content>
+                items={items2}
+            />
+        </Sider>
+        <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+              <Row justify="center">
+                <Col span={20}>
+                  <Breadcrumb
+                    items={[
+                      {
+                        href: '/',
+                        title: <HomeOutlined />,
+                      },
+                      {
+                        href: '/intelligent',
+                        title: (
+                          <>
+                            <UserOutlined />
+                            <span>Intelligent</span>
+                          </>
+                        ),
+                      },
+                      {
+                        title: 'LFP',
+                      },
+                      {
+                        title: 'NVRAM Viewer',
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row>
+              <Card>
+                <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <p>
+                      <b>Model</b>
+                    </p>
+                    <Space wrap>
+                      {itemsModel.map(item => (
+                        <Button type="primary" key={item.key} 
+                        onClick={() => handleModelSelect(item.nvram)} >
+                          {item.label}
+                        </Button>
+                      ))}
+                    </Space>
+                  </Col>
+                </Row>
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                  {selectedItem && (
+                      <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
+                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                        Download
+                        </Button>
+                      </a>
+                    )}
+                  </Col>
+                </Row>
+              </Card>
+            </Space>
+          </Content>
       </Layout>
     </>
   );
