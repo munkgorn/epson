@@ -9,3 +9,8 @@ export const selectModelState = atom({
     key: 'selectModelState',
     default: '',
 });
+
+export const userState = atom({
+    key:'userState',
+    default: ''
+})
