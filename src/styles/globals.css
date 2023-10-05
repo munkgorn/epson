@@ -23,3 +23,10 @@ ul#menuside li ul {
 }
 /* #4472c4 */
 /* #19499C */
+.custom-upload .ant-upload-list-item,
+.custom-upload .ant-upload-list-item-done {
+  display: none; /* Hide the element */
+}
+.ant-upload-list-item-container {
+  display: none;
+}

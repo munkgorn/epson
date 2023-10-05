@@ -110,93 +110,89 @@ export default function Index() {
   };
   return (
     <>
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
-            <Sider
+      <Layout style={{  background: colorBgContainer }}>
+        <Sider
+            style={{
+            background: colorBgContainer,
+            }}
+            width={200}
+        >
+            <Menu
+                mode="inline"
+                defaultSelectedKeys={['checkErrorCode']}
+                // defaultOpenKeys={['sub1']}
                 style={{
-                background: colorBgContainer,
+                    height: '100%',
                 }}
-                width={200}
-            >
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['checkErrorCode']}
-                    // defaultOpenKeys={['sub1']}
-                    style={{
-                        height: '100%',
-                    }}
-                    items={items2}
-                />
-            </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                  <Row justify="center">
-                    <Col span={20}>
-                      <Breadcrumb
-                        items={[
-                          {
-                            href: '/',
-                            title: <HomeOutlined />,
-                          },
-                          {
-                            href: '/intelligent',
-                            title: (
-                              <>
-                                <UserOutlined />
-                                <span>Intelligent</span>
-                              </>
-                            ),
-                          },
-                          {
-                            title: 'LFP',
-                          },
-                          {
-                            title: 'Check Error Code',
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Card>
-                  <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <p>
-                          <b>Model</b>
-                        </p>
-                        <Space wrap>
-                          {itemsModel.map(item => (
-                            <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-                            onClick={() => handleModelSelect(item.label)}
-                            className={selectedItem === item.label ? 'warning-button' : ''} >
-                              {item.label}
-                            </Button>
-                          ))}
-                        </Space>
-                      </Col>  
-                    </Row>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                      <Search
-                          placeholder="Enter number Error Code: "
-                          enterButton="Search"
-                          size="large"
-                          // Handle the input value as needed
-                          onChange={(e) => handleModelSelectModel(e.target.value)}
-                          value={errorCode}
-                        />
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                      <Table columns={columns} dataSource={tableData} />
-                      </Col>
-                    </Row>
-                  </Card>
-                </Space>
-              </Content>
-          </Layout>
-        </Content>
+                items={items2}
+            />
+        </Sider>
+        <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+              <Row justify="center">
+                <Col span={20}>
+                  <Breadcrumb
+                    items={[
+                      {
+                        href: '/',
+                        title: <HomeOutlined />,
+                      },
+                      {
+                        href: '/intelligent',
+                        title: (
+                          <>
+                            <UserOutlined />
+                            <span>Intelligent</span>
+                          </>
+                        ),
+                      },
+                      {
+                        title: 'LFP',
+                      },
+                      {
+                        title: 'Check Error Code',
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row>
+              <Card>
+              <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <p>
+                      <b>Model</b>
+                    </p>
+                    <Space wrap>
+                      {itemsModel.map(item => (
+                        <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
+                        onClick={() => handleModelSelect(item.label)}
+                        className={selectedItem === item.label ? 'warning-button' : ''} >
+                          {item.label}
+                        </Button>
+                      ))}
+                    </Space>
+                  </Col>  
+                </Row>
+                <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                  <Search
+                      placeholder="Enter number Error Code: "
+                      enterButton="Search"
+                      size="large"
+                      // Handle the input value as needed
+                      onChange={(e) => handleModelSelectModel(e.target.value)}
+                      value={errorCode}
+                    />
+                  </Col>
+                </Row>
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                  <Table columns={columns} dataSource={tableData} />
+                  </Col>
+                </Row>
+              </Card>
+            </Space>
+          </Content>
       </Layout>
     </>
   );

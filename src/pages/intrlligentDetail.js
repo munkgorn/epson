@@ -214,6 +214,7 @@ export default function Index() {
       setResponseData(response);
       console.log('get data');
       console.log(response);
+      let responseData = [];
       if (response.data && response.data.data && Array.isArray(response.data.data)) {
         // console.log(response.data.data);
         setResponseData(response.data.data);
@@ -227,16 +228,21 @@ export default function Index() {
             model: selectedModel,
             errorCode: symptomResponse,
           });
-          const responseData = responseErr.data.map(item => ({
+          console.log(responseErr);
+          responseData = responseErr.data.map(item => ({
             key: item.id, // Unique key for each row
             symptom: item.error_name,
             remedy: item.remedy,
             part: item.part_check,
           }));
+          console.log('>>>');
+          console.log(responseData);
           setTableData(responseData);
         } catch (error) {
           console.error(error);
         }
+        const mergedData = [...responseData, ...response.data.errorShow];
+        setTableData(mergedData);
       } else {
         console.log('Empty response data or invalid format');
         setResponseData([]); // Set an empty array if no response data or invalid format
@@ -259,124 +265,120 @@ export default function Index() {
   } = theme.useToken();
   return (
     <>
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
-            <Sider
+      <Layout style={{  background: colorBgContainer }}>
+        <Sider
+            style={{
+            background: colorBgContainer,
+            }}
+            width={200}
+        >
+            <Menu
+                mode="inline"
+                defaultSelectedKeys={['intrlligentDetail']}
+                // defaultOpenKeys={['sub1']}
                 style={{
-                background: colorBgContainer,
+                    height: '100%',
                 }}
-                width={200}
-            >
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['intrlligentDetail']}
-                    // defaultOpenKeys={['sub1']}
-                    style={{
-                        height: '100%',
-                    }}
-                    items={items2}
-                />
-            </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                  <Row justify="center">
-                    <Col span={20}>
-                      <Breadcrumb
-                        items={[
-                          {
-                            href: '/',
-                            title: <HomeOutlined />,
-                          },
-                          {
-                            href: '/intelligent',
-                            title: (
-                              <>
-                                <UserOutlined />
-                                <span>Intelligent</span>
-                              </>
-                            ),
-                          },
-                          {
-                            title: 'LFP',
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Card>
-                  <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <p>
-                          <b>Model</b>
-                        </p>
-                        <Dropdown
-                          overlay={
-                            <Menu>
-                              {itemsModel.map(item => (
-                                <Menu.Item key={item.key}>
-                                  <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
-                                </Menu.Item>
-                              ))}
-                            </Menu>
-                          }
-                        >
-                          <a onClick={e => e.preventDefault()}>
-                            <Space>
-                              Select <DownOutlined />
-                            </Space>
-                          </a>
-                        </Dropdown>
-                        {selectedModel && (
-                          <p>Selected Model: {selectedModel}</p>
-                        )}
-                      </Col>
-                    </Row>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <Dragger
-                          {...props}
-                          onChange={(info) => {
-                            const { status, originFileObj } = info.file;
-                            if (status === 'done') {
-                              handleUpload(originFileObj);
-                            }
-                          }}
-                        >
-                          <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
-                          </p>
-                          <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                          <p className="ant-upload-hint">
-                            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-                            files.
-                          </p>
-                        </Dragger>
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                      {filteredResponseData.length > 0 ? (
-                        <Table
-                          dataSource={filteredResponseData}
-                          columns={columns}
-                          pagination={false} // Remove pagination if not required
-                        />
-                      ) : (
-                        <div>No data to display.</div>
-                      )}
-                      </Col>
-                    </Row>
-                    <Row justify="center" style={{ margin: '20px' }}>
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <Table columns={columnsResult} dataSource={errorDataTable} />
-                      </Col>
-                    </Row>
-                  </Card>
-                </Space>
-              </Content>
-          </Layout>
-        </Content>
+                items={items2}
+            />
+        </Sider>
+        <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+              <Row justify="center">
+                <Col span={20}>
+                  <Breadcrumb
+                    items={[
+                      {
+                        href: '/',
+                        title: <HomeOutlined />,
+                      },
+                      {
+                        href: '/intelligent',
+                        title: (
+                          <>
+                            <UserOutlined />
+                            <span>Intelligent</span>
+                          </>
+                        ),
+                      },
+                      {
+                        title: 'LFP',
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row>
+              <Card>
+              <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <p>
+                      <b>Model</b>
+                    </p>
+                    <Dropdown
+                      overlay={
+                        <Menu>
+                          {itemsModel.map(item => (
+                            <Menu.Item key={item.key}>
+                              <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
+                            </Menu.Item>
+                          ))}
+                        </Menu>
+                      }
+                    >
+                      <a onClick={e => e.preventDefault()}>
+                        <Space>
+                          Select <DownOutlined />
+                        </Space>
+                      </a>
+                    </Dropdown>
+                    {selectedModel && (
+                      <p>Selected Model: {selectedModel}</p>
+                    )}
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <Dragger
+                      {...props}
+                      onChange={(info) => {
+                        const { status, originFileObj } = info.file;
+                        if (status === 'done') {
+                          handleUpload(originFileObj);
+                        }
+                      }}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                      <p className="ant-upload-hint">
+                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
+                        files.
+                      </p>
+                    </Dragger>
+                  </Col>
+                </Row>
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                  {filteredResponseData.length > 0 ? (
+                    <Table
+                      dataSource={filteredResponseData}
+                      columns={columns}
+                      pagination={false} // Remove pagination if not required
+                    />
+                  ) : (
+                    <div>No data to display.</div>
+                  )}
+                  </Col>
+                </Row>
+                <Row justify="center" style={{ margin: '20px' }}>
+                  <Col span={20} style={{ margin: '10px' }}>
+                    <Table columns={columnsResult} dataSource={errorDataTable} />
+                  </Col>
+                </Row>
+              </Card>
+            </Space>
+          </Content>
       </Layout>
     </>
   );

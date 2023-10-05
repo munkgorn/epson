@@ -89,9 +89,7 @@ export default function Index() {
   
   return (
     <>
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <Layout style={{ padding: '24px 0', background: colorBgContainer }}>
+          <Layout style={{ background: colorBgContainer }}>
             <Sider
                 style={{
                 background: colorBgContainer,
@@ -173,8 +171,6 @@ export default function Index() {
                 </Space>
               </Content>
           </Layout>
-        </Content>
-      </Layout>
     </>
   );
 }
