@@ -12,6 +12,9 @@ import axios from 'axios';
 import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import MyModel2 from '@/components/myModel2';
+import { useRecoilState } from 'recoil';
+import { selectModel2State } from '@/store/data';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -64,6 +67,7 @@ const columns = [
 const data = [];
 
 export default function Index() {
+  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -93,7 +97,7 @@ export default function Index() {
     setErrorCode(errorCode);
     try {
       const response = await axios.post('/api/errorCode/find', {
-        model: selectedItem,
+        model: selectModel2?.model_name,
         errorCode: errorCode,
       });
       const responseData = response.data.map(item => ({
@@ -109,91 +113,35 @@ export default function Index() {
     
   };
   return (
-    <>
-      <Layout style={{  background: colorBgContainer }}>
-        <Sider
-            style={{
-            background: colorBgContainer,
-            }}
-            width={200}
-        >
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['checkErrorCode']}
-                // defaultOpenKeys={['sub1']}
-                style={{
-                    height: '100%',
-                }}
-                items={items2}
-            />
-        </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <Row justify="center">
-                <Col span={20}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        href: '/',
-                        title: <HomeOutlined />,
-                      },
-                      {
-                        href: '/intelligent',
-                        title: (
-                          <>
-                            <UserOutlined />
-                            <span>Intelligent</span>
-                          </>
-                        ),
-                      },
-                      {
-                        title: 'LFP',
-                      },
-                      {
-                        title: 'Check Error Code',
-                      },
-                    ]}
-                  />
-                </Col>
-              </Row>
-              <Card>
-              <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <p>
-                      <b>Model</b>
-                    </p>
-                    <Space wrap>
-                      {itemsModel.map(item => (
-                        <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-                        onClick={() => handleModelSelect(item.label)}
-                        className={selectedItem === item.label ? 'warning-button' : ''} >
-                          {item.label}
-                        </Button>
-                      ))}
-                    </Space>
-                  </Col>  
-                </Row>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                  <Search
-                      placeholder="Enter number Error Code: "
-                      enterButton="Search"
-                      size="large"
-                      // Handle the input value as needed
-                      onChange={(e) => handleModelSelectModel(e.target.value)}
-                      value={errorCode}
-                    />
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                  <Table columns={columns} dataSource={tableData} />
-                  </Col>
-                </Row>
-              </Card>
-            </Space>
-          </Content>
-      </Layout>
-    </>
+    <Row justify="center" gutter={[24,24]}>
+      <Col span={24}>
+        <MyModel2 />
+        {/* <p>
+          <b>Model</b>
+        </p>
+        <Space wrap>
+          {itemsModel.map(item => (
+            <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
+            onClick={() => handleModelSelect(item.label)}
+            className={selectedItem === item.label ? 'warning-button' : ''} >
+              {item.label}
+            </Button>
+          ))}
+        </Space> */}
+      </Col>  
+      <Col span={24}>
+      <Search
+          placeholder="Enter number Error Code: "
+          enterButton="Search"
+          size="large"
+          // Handle the input value as needed
+          onChange={(e) => handleModelSelectModel(e.target.value)}
+          value={errorCode}
+        />
+      </Col>
+      <Col span={24}>
+      <Table columns={columns} dataSource={tableData} />
+      </Col>
+    </Row>
   );
 }

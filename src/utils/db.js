@@ -13,7 +13,6 @@ export async function connectDb() {
     database: process.env.DB_NAME || 'epson_db',
   };
 
-  const connection = await mysql.createConnection(config);
-
+  const connection = await mysql.createPool(config);
   return connection;
 }

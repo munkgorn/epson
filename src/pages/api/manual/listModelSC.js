@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     const connection = await connectDb();
     const [logData] = await connection.query(
-      "SELECT `model_name`,`manual`,`diagram`,`nvram` FROM `es_pt_model` WHERE `type`='LFP' ORDER BY `model_name`"
+      "SELECT * FROM `es_pt_model` WHERE `type`='LFP' ORDER BY `model_name`"
     );
 
 

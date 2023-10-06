@@ -13,6 +13,9 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
+import { useRecoilState } from 'recoil';
+import { selectModel2State } from '@/store/data';
+import MyModel2 from '@/components/myModel2';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -64,6 +67,7 @@ const columns = [
 ];
 const data = [];
 export default function Index() {
+  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State)
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -89,84 +93,19 @@ export default function Index() {
   } = theme.useToken();
   
   return (
-    <>
-      <Layout style={{  background: colorBgContainer }}>
-        <Sider
-            style={{
-            background: colorBgContainer,
-            }}
-            width={200}
-        >
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['nvram']}
-                // defaultOpenKeys={['sub1']}
-                style={{
-                    height: '100%',
-                }}
-                items={items2}
-            />
-        </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <Row justify="center">
-                <Col span={20}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        href: '/',
-                        title: <HomeOutlined />,
-                      },
-                      {
-                        href: '/intelligent',
-                        title: (
-                          <>
-                            <UserOutlined />
-                            <span>Intelligent</span>
-                          </>
-                        ),
-                      },
-                      {
-                        title: 'LFP',
-                      },
-                      {
-                        title: 'NVRAM Viewer',
-                      },
-                    ]}
-                  />
-                </Col>
-              </Row>
-              <Card>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <p>
-                      <b>Model</b>
-                    </p>
-                    <Space wrap>
-                      {itemsModel.map(item => (
-                        <Button type="primary" key={item.key} 
-                        onClick={() => handleModelSelect(item.nvram)} >
-                          {item.label}
-                        </Button>
-                      ))}
-                    </Space>
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                  {selectedItem && (
-                      <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                        Download
-                        </Button>
-                      </a>
-                    )}
-                  </Col>
-                </Row>
-              </Card>
-            </Space>
-          </Content>
-      </Layout>
-    </>
+  <Row justify="center" gutter={[24,24]}>
+    <Col span={24}>
+      <MyModel2 />
+    </Col>
+    <Col span={24}>
+    {selectModel2?.model_name && (
+        <a href={`upload/selectedItem/${selectModel2?.model_name}`} target="_blank" rel="noopener noreferrer">
+          <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+          Download {selectModel2?.model_name}
+          </Button>
+        </a>
+      )}
+    </Col>
+  </Row>
   );
 }

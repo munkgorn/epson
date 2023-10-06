@@ -12,6 +12,9 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
+import MyModel2 from '@/components/myModel2';
+import { useRecoilState } from 'recoil';
+import { models2State, selectModel2State } from '@/store/data';
 
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -176,19 +179,20 @@ const propsCalculate = {
   method: 'post',
 };
 export default function Index() {
+  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
-  useEffect(() => {
-    fetch('/api/manual/listModelSC')
-      .then(response => response.json())
-      .then(data => {
-        const transformedItems = data.map(item => ({
-          key: item.model_name,
-          label: item.model_name,
-        }));
-        setItems(transformedItems);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch('/api/manual/listModelSC')
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       const transformedItems = data.map(item => ({
+  //         key: item.model_name,
+  //         label: item.model_name,
+  //       }));
+  //       setItems(transformedItems);
+  //     });
+  // }, []);
   
   const handleModelSelect = model => {
     setSelectedModel(model);
@@ -201,7 +205,7 @@ export default function Index() {
   const [errorDataTable, setTableData] = useState([]);
   const handleUpload = async (file) => {
     try {
-      if (selectedModel === "") {
+      if (_.isEmpty(selectModel2)) {
         // Show an error message using Ant Design message.error
         message.error("Please select a model before uploading.");
         return; // Exit the function
@@ -219,13 +223,13 @@ export default function Index() {
         // console.log(response.data.data);
         setResponseData(response.data.data);
         setErrorData(response.data.errorData);
-        console.log(selectedModel);
+        console.log(selectModel2);
         console.log(response.data.errorData[0].symptom);
         let symptomResponse = response.data.errorData[0].symptom;
         try {
           
           const responseErr = await axios.post('/api/errorCode/find', {
-            model: selectedModel,
+            model: selectModel2?.model_name,
             errorCode: symptomResponse,
           });
           console.log(responseErr);
@@ -264,54 +268,10 @@ export default function Index() {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <>
-      <Layout style={{  background: colorBgContainer }}>
-        <Sider
-            style={{
-            background: colorBgContainer,
-            }}
-            width={200}
-        >
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['intrlligentDetail']}
-                // defaultOpenKeys={['sub1']}
-                style={{
-                    height: '100%',
-                }}
-                items={items2}
-            />
-        </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <Row justify="center">
-                <Col span={20}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        href: '/',
-                        title: <HomeOutlined />,
-                      },
-                      {
-                        href: '/intelligent',
-                        title: (
-                          <>
-                            <UserOutlined />
-                            <span>Intelligent</span>
-                          </>
-                        ),
-                      },
-                      {
-                        title: 'LFP',
-                      },
-                    ]}
-                  />
-                </Col>
-              </Row>
-              <Card>
-              <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <p>
+    <Row justify="center" gutter={[20,20]}>
+      <Col span={24}>
+        <MyModel2 />
+          {/* <p>
                       <b>Model</b>
                     </p>
                     <Dropdown
@@ -333,53 +293,42 @@ export default function Index() {
                     </Dropdown>
                     {selectedModel && (
                       <p>Selected Model: {selectedModel}</p>
-                    )}
-                  </Col>
-                </Row>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <Dragger
-                      {...props}
-                      onChange={(info) => {
-                        const { status, originFileObj } = info.file;
-                        if (status === 'done') {
-                          handleUpload(originFileObj);
-                        }
-                      }}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-                        files.
-                      </p>
-                    </Dragger>
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                  {filteredResponseData.length > 0 ? (
-                    <Table
-                      dataSource={filteredResponseData}
-                      columns={columns}
-                      pagination={false} // Remove pagination if not required
-                    />
-                  ) : (
-                    <div>No data to display.</div>
-                  )}
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <Table columns={columnsResult} dataSource={errorDataTable} />
-                  </Col>
-                </Row>
-              </Card>
-            </Space>
-          </Content>
-      </Layout>
-    </>
+                    )} */}
+      </Col>
+      <Col span={24}>
+        <Dragger
+          {...props}
+          onChange={(info) => {
+            const { status, originFileObj } = info.file;
+            if (status === 'done') {
+              handleUpload(originFileObj);
+            }
+          }}
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-hint">
+            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
+            files.
+          </p>
+        </Dragger>
+      </Col>
+      <Col span={24}>
+      {filteredResponseData.length > 0 ? (
+        <Table
+          dataSource={filteredResponseData}
+          columns={columns}
+          pagination={false} // Remove pagination if not required
+        />
+      ) : (
+        <div>No data to display.</div>
+      )}
+      </Col>
+      <Col span={24}>
+        <Table columns={columnsResult} dataSource={errorDataTable} />
+      </Col>
+    </Row>
   );
 }

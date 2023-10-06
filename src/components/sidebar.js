@@ -15,16 +15,17 @@ const Sidebar = () => {
     const items = [
         { key: 'home', label: 'Home', href: '/' },
         { key: 'datacenter', label: 'Data Center', children: [
-            // { key: 'specandcompair', label: 'Specification & Comparison', href: '/specandcompair'},
             { key: 'specification', label: 'Specification', href: '/specification'},
             { key: 'comparison', label: 'Comparison', href: '/comparison'},
             { key: 'manual', label: 'Manual', href: '/manualDetail' },
             { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
         ] },
-        { key: 'dataanalytic', label: 'Data Analytic', href: '/intelligent' },
-        // { key: 'dataanalytic', label: 'Data Analytic', children: [
-            // { key: 'manual', label: 'Manual', href: '/manual' },
-        // ] },
+        { key: 'dataanalytics', label: 'Data Analytics', children: [
+            { key: 'dataanalytic', label: 'Data Analytic', href: '/intrlligentDetail'},
+            { key: 'checkerrorcode', label: 'Check Error Code', href: '/checkErrorCode'},
+            { key: 'nvram', label: 'NVRAM Viewer', href: '/nvram' },
+            { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/serviceManual' },
+        ] },
         { key:'divider', type: 'divider' },
         { key: 'logout', label: 'Logout', href: '/auth/logout' },
     ]
