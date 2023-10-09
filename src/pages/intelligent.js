@@ -1,17 +1,13 @@
 import React, { useEffect } from 'react';
-import{  Col, Divider, Row  } from 'antd';
-import { Card, Space } from 'antd';
-import { AlertOutlined,SolutionOutlined,HomeOutlined ,UserOutlined   } from '@ant-design/icons';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
-import { Breadcrumb } from 'antd';
+import{  Col, Row  } from 'antd';
+import { Card } from 'antd';
 import { useSession } from 'next-auth/react';
 const { Meta } = Card;
 export default function index() {
     const {data:session, status} = useSession();
     useEffect(() => {
         console.log(status)
-    }, [status])
+    }, [status]);
     
   return (
     <>
@@ -22,7 +18,7 @@ export default function index() {
         </Row>
         <Row justify="center">
             <Col span={5}  style={{ margin: '10px' }}>
-                <a href="/intrlligentDetail">
+                <a href="/intrlligentDetail" >
                     <Card
                         hoverable
                         style={{
