@@ -113,35 +113,40 @@ export default function Index() {
     
   };
   return (
-    <Row justify="center" gutter={[24,24]}>
-      <Col span={24}>
-        <MyModel2 />
-        {/* <p>
-          <b>Model</b>
-        </p>
-        <Space wrap>
-          {itemsModel.map(item => (
-            <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-            onClick={() => handleModelSelect(item.label)}
-            className={selectedItem === item.label ? 'warning-button' : ''} >
-              {item.label}
-            </Button>
-          ))}
-        </Space> */}
-      </Col>  
-      <Col span={24}>
-      <Search
-          placeholder="Enter number Error Code: "
-          enterButton="Search"
-          size="large"
-          // Handle the input value as needed
-          onChange={(e) => handleModelSelectModel(e.target.value)}
-          value={errorCode}
-        />
-      </Col>
-      <Col span={24}>
-      <Table columns={columns} dataSource={tableData} />
-      </Col>
-    </Row>
+    <>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Space wrap>
+            {itemsModel.map(item => (
+              <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
+              onClick={() => handleModelSelect(item.label)}
+              className={selectedItem === item.label ? 'warning-button' : ''} >
+                {item.label}
+              </Button>
+            ))}
+          </Space>
+        </Col>  
+      </Row>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+        <Search
+            placeholder="Enter number Error Code: "
+            enterButton="Search"
+            size="large"
+            // Handle the input value as needed
+            onChange={(e) => handleModelSelectModel(e.target.value)}
+            value={errorCode}
+          />
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+        <Table columns={columns} dataSource={tableData} />
+        </Col>
+      </Row>
+    </>
   );
 }

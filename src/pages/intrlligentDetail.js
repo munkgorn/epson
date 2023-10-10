@@ -268,67 +268,74 @@ export default function Index() {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <Row justify="center" gutter={[20,20]}>
-      <Col span={24}>
-        <MyModel2 />
-          {/* <p>
-                      <b>Model</b>
-                    </p>
-                    <Dropdown
-                      overlay={
-                        <Menu>
-                          {itemsModel.map(item => (
-                            <Menu.Item key={item.key}>
-                              <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
-                            </Menu.Item>
-                          ))}
-                        </Menu>
-                      }
-                    >
-                      <a onClick={e => e.preventDefault()}>
-                        <Space>
-                          Select <DownOutlined />
-                        </Space>
-                      </a>
-                    </Dropdown>
-                    {selectedModel && (
-                      <p>Selected Model: {selectedModel}</p>
-                    )} */}
-      </Col>
-      <Col span={24}>
-        <Dragger
-          {...props}
-          onChange={(info) => {
-            const { status, originFileObj } = info.file;
-            if (status === 'done') {
-              handleUpload(originFileObj);
+    <>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Dropdown
+            overlay={
+              <Menu>
+                {itemsModel.map(item => (
+                  <Menu.Item key={item.key}>
+                    <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
+                  </Menu.Item>
+                ))}
+              </Menu>
             }
-          }}
-        >
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-            files.
-          </p>
-        </Dragger>
-      </Col>
-      <Col span={24}>
-      {filteredResponseData.length > 0 ? (
-        <Table
-          dataSource={filteredResponseData}
-          columns={columns}
-          pagination={false} // Remove pagination if not required
-        />
-      ) : (
-        <div>No data to display.</div>
-      )}
-      </Col>
-      <Col span={24}>
-        <Table columns={columnsResult} dataSource={errorDataTable} />
-      </Col>
-    </Row>
+          >
+            <a onClick={e => e.preventDefault()}>
+              <Space>
+                Select <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
+          {selectedModel && (
+            <p>Selected Model: {selectedModel}</p>
+          )}
+        </Col>
+      </Row>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <Dragger
+            {...props}
+            onChange={(info) => {
+              const { status, originFileObj } = info.file;
+              if (status === 'done') {
+                handleUpload(originFileObj);
+              }
+            }}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">
+              Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
+              files.
+            </p>
+          </Dragger>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+        {filteredResponseData.length > 0 ? (
+          <Table
+            dataSource={filteredResponseData}
+            columns={columns}
+            pagination={false} // Remove pagination if not required
+          />
+        ) : (
+          <div>No data to display.</div>
+        )}
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+          <Table columns={columnsResult} dataSource={errorDataTable} />
+        </Col>
+      </Row>
+    </>
   );
 }
