@@ -26,9 +26,12 @@ CREATE TABLE `ep_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `salt` text DEFAULT NULL,
   `date_changepassword` date DEFAULT NULL,
+  `fail_attempt` int(11) DEFAULT 0,
+  `status` enum('active','inactive','lock','changepassword') DEFAULT 'inactive',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +40,7 @@ CREATE TABLE `ep_users` (
 
 LOCK TABLES `ep_users` WRITE;
 /*!40000 ALTER TABLE `ep_users` DISABLE KEYS */;
-INSERT INTO `ep_users` VALUES (2,'admin','81dc9bdb52d04dc20036dbd8313ed055','2023-10-06');
+INSERT INTO `ep_users` VALUES (2,'admin','deb1ff9a51a8abed75caf4578c64b9b9b32c93fcb8084c484e3a1684cb0d7afd','4ae96736bc192257213ac5972fc3ae2c','2023-10-10',0,'active'),(3,'test','5f37e649ae2b891d8961aaa5635e26c7a1b6be1548fceb4986dda5641836b733','fa80ce053360d324d241b77347ca58e9','2023-10-11',0,'active');
 /*!40000 ALTER TABLE `ep_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -324,4 +327,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-06 23:33:24
+-- Dump completed on 2023-10-11  1:09:15

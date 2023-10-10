@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SessionProvider } from "next-auth/react";
 import { ConfigProvider, Layout, theme, Typography } from "antd";
-import { RecoilRoot } from "recoil";
+import { RecoilRoot, RecoilEnv } from "recoil";
 import "@/styles/globals.css";
 const { Content } = Layout;
 import HeaderMenu from "@/components/headermenu";
@@ -9,6 +9,8 @@ import Sidebar from "@/components/sidebar";
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useRouter } from "next/router";
 import _ from "lodash";
+
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
 
 export default function App({
 	Component,

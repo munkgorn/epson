@@ -24,3 +24,8 @@ export const userState = atom({
     key:'userState',
     default: ''
 })
+
+export const attemptLoginState = atom({
+    key: 'attemptLoginState',
+    default: 0
+})

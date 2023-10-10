@@ -6,20 +6,25 @@ export default async function handler(req, res) {
   try {
     const {method,data,params} = decode(req.body)
     if (method=='put') {
-
       const connection = await connectDb();
-      const result = await connection.query(
-        "UPDATE ep_users SET password = ?, salt = ?, fail_attempt = 0, status = 'active', date_changepassword = ? WHERE username = ? ",
-        [data?.password, data?.salt, data?.date_changepassword, data?.username],
+      
+      let status = 'active';
+      if (+data?.attempt>=6) {
+        status = 'lock';
+      }
+
+      const update = await connection.query(
+        'UPDATE ep_users SET fail_attempt = ?, status = ? WHERE username = ?',
+        [data?.attempt, status, data?.username],
         function(err, results) {
-          console.error(err);
-          console.log(results)
+        console.error(err);
+        console.log(results)
         }
-      );
+    );
+    console.log(update);
       connection.end();
 
-      console.log(result)
-      res.status(200).json({data: encode(result)})
+      res.status(200).json({data: encode(update[0])})
     } else {
       res.status(405).send('Method not allowed')
     }

@@ -7,7 +7,7 @@ import md5 from 'md5';
 import dayjs from 'dayjs';
 import { apiClient } from '@/utils/apiClient';
 import { signIn } from 'next-auth/react';
-import { decode } from '@/utils/encryption';
+import { decode, hashPassword, generateSalt } from '@/utils/encryption';
 
 const ChangePassword = () => {
     const router = useRouter();
@@ -20,16 +20,21 @@ const ChangePassword = () => {
             console.log(values)
             // check duplicate old password
             let old = await apiClient().post('/user', {username: values.username})
-            if (old?.data?.password == md5(values.newpassword)) {
+            console.log('old',old)
+            if (old?.data[0]?.password == hashPassword(values.newpassword, old?.data[0]?.salt)) {
                 message.error('The new password you entered is the same as old password. Please enter a different password.');
             } else {
+              let newSalt = generateSalt();
+              console.log('newSalt', newSalt)
                 let data = {
                     username: values.username,
-                    password: md5(values.newpassword),
+                    password: hashPassword(values.newpassword, newSalt),
+                    salt: newSalt,
                     date_changepassword: dayjs().format('YYYY-MM-DD')
                 }
                 let result = await apiClient().put('/user/update', data);
-                if (result.status==200 && result?.data?.changedRows==1) {
+                console.log(result)
+                if (result.status==200 && result?.data[0]?.changedRows==1) {
                     router.push('/auth/login')
                 } else {
                     message.error('Cannot update password, please contact admin')
@@ -54,15 +59,25 @@ const ChangePassword = () => {
             <Form.Item
               label="New Password"
               name="newpassword"
-              rules={[{ required: true, message: 'Please enter your new password' }]}
+              rules={[
+                { required: true, message: 'Please enter your new password' },
+                {
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
+                  message: 'Password pattern Uppercase+Lowercase+SpacialCharator+Number'
+                }
+              ]}
             >
-              <Input.Password />
+              <Input />
             </Form.Item>
             <Form.Item
               label="Confirm Password"
               name="confirmpassword"
               rules={[
                 { required: true, message: 'Please enter your confirm password' },
+                {
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
+                  message: 'Password pattern Uppercase+Lowercase+SpacialCharator+Number'
+                },
                 ({getFieldValue}) => ({
                     validator(_, value) {
                         if (!value || getFieldValue('newpassword') === value) {
@@ -73,7 +88,7 @@ const ChangePassword = () => {
                 })
                 ]}
             >
-              <Input.Password />
+              <Input />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={loading} block>
