@@ -112,7 +112,7 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <a href="https://www.google.com" target="_blank">
+          <a href="/errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
               <Button type="primary">Search error code</Button>
           </a>
         </Col>  
