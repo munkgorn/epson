@@ -110,64 +110,13 @@ export default function Index() {
   };
   return (
     <>
-          <Layout style={{ background: colorBgContainer }}>
-            <Sider
-                style={{
-                background: colorBgContainer,
-                }}
-                width={200}
-            >
-                <Menu
-                    mode="inline"
-                    defaultSelectedKeys={['checkErrorCode']}
-                    // defaultOpenKeys={['sub1']}
-                    style={{
-                        height: '100%',
-                    }}
-                    items={items2}
-                />
-            </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-                  <Row justify="center">
-                    <Col span={20}>
-                      <Breadcrumb
-                        items={[
-                          {
-                            href: '/home',
-                            title: <HomeOutlined />,
-                          },
-                          {
-                            href: '/intelligent',
-                            title: (
-                              <>
-                                <UserOutlined />
-                                <span>Intelligent</span>
-                              </>
-                            ),
-                          },
-                          {
-                            title: 'LFP',
-                          },
-                          {
-                            title: 'Check Error Code',
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Card>
-                    <Row justify="center">
-                      <Col span={20} style={{ margin: '10px' }}>
-                        <a href="https://www.google.com" target="_blank">
-                            <Button type="primary">Search error code</Button>
-                        </a>
-                      </Col>  
-                    </Row>
-                  </Card>
-                </Space>
-            </Content>
-          </Layout>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <a href="https://www.google.com" target="_blank">
+              <Button type="primary">Search error code</Button>
+          </a>
+        </Col>  
+      </Row>
     </>
   );
 }

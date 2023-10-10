@@ -78,28 +78,38 @@ export default function Index() {
   } = theme.useToken();
   
   return (
-    <Row justify="center" gutter={[24,24]}>
-      <Col span={24}>
-        <MyModel2 />
-      </Col>
-      <Col span={24}>
-        <Space>
-        {selectModel2?.manual && (
-          <a href={`upload/manual/${selectModel2?.manual}`} target="_blank" rel="noopener noreferrer">
-            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-              Service Manual {selectModel2?.manual}
-            </Button>
-          </a>
-        )}
-        {selectModel2?.diagram && (
-          <a href={`upload/diagram/${selectModel2?.diagram}`} target="_blank" rel="noopener noreferrer">
-            <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-              Diagram {selectModel2?.diagram}
-            </Button>
-          </a>
-        )}
-        </Space>
-      </Col>
-    </Row>
+    <>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Space wrap>
+          {itemsModel.map(item => (
+              <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
+          ))}
+          </Space>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+          {manual && (
+            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+              <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                Service Manual {manual}
+              </Button>
+            </a>
+          )}
+
+          {diagram && (
+            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+              <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                Diagram {diagram}
+              </Button>
+            </a>
+          )}
+        </Col>
+      </Row>
+    </>
   );
 }

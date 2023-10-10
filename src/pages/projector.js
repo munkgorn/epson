@@ -13,6 +13,8 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import { Select } from 'antd';
+import { Modal } from 'antd';
+
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -84,12 +86,13 @@ const propsCalculate = {
   action: '/api/analytic/readfile',
   method: 'post',
 };
-
 export default function Index() {
   const [dataResult, setResponseData] = useState([]);
   const [dataResultDetail, setResponseDataDetail] = useState([]);
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState(null);
+  const { warning } = Modal;
+
   useEffect(() => {
     fetch('/api/analytic/list')
       .then(response => response.json())
@@ -123,7 +126,10 @@ export default function Index() {
             setResponseDataDetail(response.data.information);
           }
           if (response.data.errorData.length === 0) {
-            message.error("Data empty");
+            warning({
+              title: 'Warning!',
+              content: 'Data Empty',
+            });
           }
         })
         .catch((error) => {
@@ -155,114 +161,61 @@ export default function Index() {
 
   return (
     <> 
-      <Layout style={{  background: colorBgContainer }}>
-        <Sider
-            style={{
-            background: colorBgContainer,
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Select
+            showSearch
+            placeholder="Select an item"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            style={{ width: 200 }}
+          >
+            {itemsModel.map(item => (
+              <Option key={item.key} value={item.key}>
+                {item.label}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <Dragger
+            className="custom-upload"
+            {...props}
+            onChange={(info) => {
+              const { status, originFileObj } = info.file;
+              if (status === 'done') {
+                handleUpload(originFileObj);
+              }
             }}
-            width={200}
-        >
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['intrlligentDetail']}
-                style={{
-                    height: '100%',
-                }}
-                items={items2}
-            />
-        </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <Row justify="center">
-                <Col span={20}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        href: '/',
-                        title: <HomeOutlined />,
-                      },
-                      {
-                        href: '/intelligent',
-                        title: (
-                          <>
-                            <UserOutlined />
-                            <span>Intelligent</span>
-                          </>
-                        ),
-                      },
-                      {
-                        title: 'Projector',
-                      },
-                      {
-                        title: 'Data Analytic',
-                      },
-                    ]}
-                  />
-                </Col>
-              </Row>
-              <Card>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <p>
-                      <b>Model</b>
-                    </p>
-                    <Select
-                      showSearch
-                      placeholder="Select an item"
-                      optionFilterProp="children"
-                      onChange={onChange}
-                      onSearch={onSearch}
-                      filterOption={filterOption}
-                      style={{ width: 200 }}
-                    >
-                      {itemsModel.map(item => (
-                        <Option key={item.key} value={item.key}>
-                          {item.label}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Col>
-                </Row>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <Dragger
-                     className="custom-upload"
-                      {...props}
-                      onChange={(info) => {
-                        const { status, originFileObj } = info.file;
-                        if (status === 'done') {
-                          handleUpload(originFileObj);
-                        }
-                      }}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                      <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-                        files.
-                      </p>
-                    </Dragger>
-                  </Col>
-                </Row>
-                
-                
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <Table columns={columns} dataSource={dataResultDetail} />
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                  <Table columns={columnsResult} dataSource={dataResult} pagination={false} />
-
-                  </Col>
-                </Row>
-              </Card>
-            </Space>
-          </Content>
-      </Layout>
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">
+              Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
+              files.
+            </p>
+          </Dragger>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+          <Table columns={columns} dataSource={dataResultDetail} />
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+        <Table columns={columnsResult} dataSource={dataResult} pagination={false} />
+        </Col>
+      </Row>
     </>
   );
 }

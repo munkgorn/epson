@@ -93,19 +93,33 @@ export default function Index() {
   } = theme.useToken();
   
   return (
-  <Row justify="center" gutter={[24,24]}>
-    <Col span={24}>
-      <MyModel2 />
-    </Col>
-    <Col span={24}>
-    {selectModel2?.model_name && (
-        <a href={`upload/selectedItem/${selectModel2?.model_name}`} target="_blank" rel="noopener noreferrer">
-          <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-          Download {selectModel2?.model_name}
-          </Button>
-        </a>
-      )}
-    </Col>
-  </Row>
+    <>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Space wrap>
+            {itemsModel.map(item => (
+              <Button type="primary" key={item.key} 
+              onClick={() => handleModelSelect(item.nvram)} >
+                {item.label}
+              </Button>
+            ))}
+          </Space>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+        {selectedItem && (
+            <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
+              <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+              Download
+              </Button>
+            </a>
+          )}
+        </Col>
+      </Row>
+    </>
   );
 }
