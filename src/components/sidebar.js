@@ -12,22 +12,9 @@ const Sidebar = () => {
     const [title,setTitle] = useRecoilState(titleState)
     const [currentMenuItem, setCurrentMenuItem] = useState([])
     const router = useRouter();
-    const items = [
-        { key: 'home', label: 'Home', href: '/' },
-        { key: 'datacenter', label: 'Data Center', children: [
-            // { key: 'specandcompair', label: 'Specification & Comparison', href: '/specandcompair'},
-            { key: 'specification', label: 'Specification', href: '/specification'},
-            { key: 'comparison', label: 'Comparison', href: '/comparison'},
-            { key: 'manual', label: 'Manual', href: '/manualDetail' },
-            { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
-        ] },
-        { key: 'dataanalytic', label: 'Data Analytic', href: '/intelligent' },
-        // { key: 'dataanalytic', label: 'Data Analytic', children: [
-            // { key: 'manual', label: 'Manual', href: '/manual' },
-        // ] },
-        { key:'divider', type: 'divider' },
-        { key: 'logout', label: 'Logout', href: '/auth/logout' },
-    ]
+    const [items, setItems] = useState([]);
+    
+    
     const handleClick = e => {
         let mainKey = e.key;
         let data = [
@@ -59,33 +46,112 @@ const Sidebar = () => {
         })
         setBc(_.uniqBy(data, 'title'))
         router.push(e?.item?.props?.href)
-        // console.log(e.item.props.href)
     }
     
     const findCurrent = (pathname) => {
         let selected = []
         _.map(items, (item) => {
-            if (item.href==pathname) {
+            if (item.href==pathname) { 
                 selected = [item.key];
             }
             if (item.children) {
                 _.map(item.children, child => {
+                    console.log(pathname,child.href);
                     if (child.href == pathname) {
                         selected = [item.key, child.key];
                     }
                 })
             }
         });
-        setCurrentMenuItem(selected)
+        setCurrentMenuItem(selected);
     }
 
     useEffect(() => {
-        findCurrent(router.pathname)
+        if (router.pathname === '/intrlligentDetail' || router.pathname === '/checkErrorCode' || router.pathname === '/nvram' || router.pathname === '/serviceManual') {
+            setItems([
+                { key: 'home', label: 'Home', href: '/' },
+                { key: 'datacenter', label: 'Data Center', children: [
+                    { key: 'specification', label: 'Specification', href: '/specification'},
+                    { key: 'comparison', label: 'Comparison', href: '/comparison'},
+                    { key: 'manual', label: 'Manual', href: '/manualDetail' },
+                    { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
+                ] },
+                { key: 'dataanalytics', label: 'Data Analytics LFP', children: [
+                    { key: 'dataanalytic', label: 'Data Analytic', href: '/intrlligentDetail'},
+                    { key: 'checkerrorcode', label: 'Check Error Code', href: '/checkErrorCode'},
+                    { key: 'nvram', label: 'NVRAM Viewer', href: '/nvram' },
+                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/serviceManual' },
+                ] },
+                { key:'divider', type: 'divider' },
+            ]);
+        }else if (router.pathname === '/projector' || router.pathname === '/projectorServiceManual') {
+            setItems([
+                { key: 'home', label: 'Home', href: '/' },
+                { key: 'datacenter', label: 'Data Center', children: [
+                    { key: 'specification', label: 'Specification', href: '/specification'},
+                    { key: 'comparison', label: 'Comparison', href: '/comparison'},
+                    { key: 'manual', label: 'Manual', href: '/manualDetail' },
+                    { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
+                ] },
+                { key: 'dataanalytics', label: 'Data Analytics Projector', children: [
+                    { key: 'dataanalytic', label: 'Data Analytic', href: '/projector'},
+                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/projectorServiceManual' },
+                ] },
+                { key:'divider', type: 'divider' },
+            ]);
+        }else if (router.pathname === '/otherCheckErrorCodeLIJ' || router.pathname === '/otherServiceManualLIJ') {
+            setItems([
+                { key: 'home', label: 'Home', href: '/' },
+                { key: 'datacenter', label: 'Data Center', children: [
+                    { key: 'specification', label: 'Specification', href: '/specification'},
+                    { key: 'comparison', label: 'Comparison', href: '/comparison'},
+                    { key: 'manual', label: 'Manual', href: '/manualDetail' },
+                    { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
+                ] },
+                { key: 'dataanalytics', label: 'Data Analytics LIJ', children: [
+                    { key: 'checkerrorcode', label: 'Check Error Code', href: '/otherCheckErrorCodeLIJ'},
+                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/otherServiceManualLIJ' },
+                ] }, 
+                { key:'divider', type: 'divider' },
+            ]);
+        }else if (router.pathname === '/otherCheckErrorCode' || router.pathname === '/otherServiceManual') {
+            setItems([
+                { key: 'home', label: 'Home', href: '/' },
+                { key: 'datacenter', label: 'Data Center', children: [
+                    { key: 'specification', label: 'Specification', href: '/specification'},
+                    { key: 'comparison', label: 'Comparison', href: '/comparison'},
+                    { key: 'manual', label: 'Manual', href: '/manualDetail' },
+                    { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
+                ] },
+                { key: 'dataanalytics', label: 'Data Analytics RIPs', children: [
+                    { key: 'checkerrorcode', label: 'Check Error Code', href: '/otherCheckErrorCode'},
+                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/otherServiceManual' },
+                ] },
+                { key:'divider', type: 'divider' },
+            ]);
+        }else{
+            setItems([
+                { key: 'home', label: 'Home', href: '/' },
+                { key: 'datacenter', label: 'Data Center', children: [
+                    { key: 'specification', label: 'Specification', href: '/specification'},
+                    { key: 'comparison', label: 'Comparison', href: '/comparison'},
+                    { key: 'manual', label: 'Manual', href: '/manualDetail' },
+                    { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
+                ] },
+                { key: 'dataanalytics', label: 'Data Analytics', href: '/intelligent' },
+                { key:'divider', type: 'divider' },
+                { key: 'logout', label: 'Logout', href: '/auth/logout' },
+            ]);
+        }
+        
     }, [router.pathname])
-
+    
+    useEffect(() => {
+        findCurrent(router.pathname);
+    }, [items,router.pathname]);
     useEffect(() => {
         console.log('currentMenuItem',currentMenuItem)
-    }, [currentMenuItem])
+    }, [currentMenuItem]);
     
     
 
@@ -100,7 +166,7 @@ const Sidebar = () => {
                 theme={'dark'}
                 mode="inline"
                 defaultSelectedKeys={['home']}
-                defaultOpenKeys={['datacenter','dataanalytic']}
+                defaultOpenKeys={['datacenter','dataanalytics']}
                 selectedKeys={currentMenuItem}
                 items={items}
                 onClick={handleClick}

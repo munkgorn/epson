@@ -91,86 +91,37 @@ export default function Index() {
   
   return (
     <>
-      <Layout style={{  background: colorBgContainer }}>
-        <Sider
-            style={{
-            background: colorBgContainer,
-            }}
-            width={200}
-        >
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={['serviceManual']}
-                // defaultOpenKeys={['sub1']}
-                style={{
-                    height: '100%',
-                }}
-                items={items2}
-            />
-        </Sider>
-        <Content style={{ padding: '0 24px', minHeight: 280 }}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <Row justify="center">
-                <Col span={20}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        href: '/',
-                        title: <HomeOutlined />,
-                      },
-                      {
-                        href: '/intelligent',
-                        title: (
-                          <>
-                            <UserOutlined />
-                            <span>Intelligent</span>
-                          </>
-                        ),
-                      },
-                      {
-                        title: 'LFP',
-                      },
-                      {
-                        title: 'NVRAM Viewer',
-                      },
-                    ]}
-                  />
-                </Col>
-              </Row>
-                <Row justify="center">
-                  <Col span={20} style={{ margin: '10px' }}>
-                    <p>
-                      <b>Model</b>
-                    </p>
-                    <Space wrap>
-                    {itemsModel.map(item => (
-                        <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
-                    ))}
-                    </Space>
-                  </Col>
-                </Row>
-                <Row justify="center" style={{ margin: '20px' }}>
-                  <Col span={20} style={{ margin: '10px' }}>
-                    {manual && (
-                      <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                          Service Manual {manual}
-                        </Button>
-                      </a>
-                    )}
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <p>
+            <b>Model</b>
+          </p>
+          <Space wrap>
+          {itemsModel.map(item => (
+              <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
+          ))}
+          </Space>
+        </Col>
+      </Row>
+      <Row justify="center" style={{ margin: '20px' }}>
+        <Col span={20} style={{ margin: '10px' }}>
+          {manual && (
+            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+              <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                Service Manual {manual}
+              </Button>
+            </a>
+          )}
 
-                    {diagram && (
-                      <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
-                        <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                          Diagram {diagram}
-                        </Button>
-                      </a>
-                    )}
-                  </Col>
-                </Row>
-            </Space>
-          </Content>
-      </Layout>
+          {diagram && (
+            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+              <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
+                Diagram {diagram}
+              </Button>
+            </a>
+          )}
+        </Col>
+      </Row>
     </>
   );
 }
