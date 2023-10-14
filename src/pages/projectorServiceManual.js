@@ -13,28 +13,9 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
-const items2 = [
-  getItem(
-      <a href="/projector">Data Analytic</a>,
-      'intrlligentDetail',
-      <UserOutlined />,
-    ),
-    getItem(
-      <a href="/projectorServiceManual">Service Manual & Diagram</a>,
-      'serviceManual',
-      <LaptopOutlined />,
-    ),
-];
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
   const [manual, setSelectedManual] = useState(null);
@@ -69,8 +50,8 @@ export default function Index() {
             <b>Model</b>
           </p>
           <Space wrap>
-          {itemsModel.map(item => (
-              <Button type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
+          {itemsModel.map((item,k) => (
+              <Button key={k} type="primary" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
           ))}
           </Space>
         </Col>  
@@ -78,19 +59,19 @@ export default function Index() {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {manual && (
-            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {manual}
               </Button>
-            </a>
+            </Link>
           )}
 
           {diagram && (
-            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {diagram}
               </Button>
-            </a>
+            </Link>
           )}
         </Col>
       </Row>

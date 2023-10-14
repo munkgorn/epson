@@ -15,6 +15,7 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import MyModel2 from '@/components/myModel2';
 import { useRecoilState } from 'recoil';
 import { selectModel2State } from '@/store/data';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -27,22 +28,22 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
+      <Link href="/intrlligentDetail">Data Analytic</Link>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
+      <Link href="/checkErrorCode">Check Error Code</Link>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
+      <Link href="/nvram">NVRAM Viewer</Link>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
+      <Link href="/serviceManual">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),

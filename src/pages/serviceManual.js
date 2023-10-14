@@ -16,6 +16,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 import MyModel2 from '@/components/myModel2';
 import { useRecoilState } from 'recoil';
 import { selectModel2State } from '@/store/data';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -28,22 +29,22 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
+      <Link href="/intrlligentDetail">Data Analytic</Link>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
+      <Link href="/checkErrorCode">Check Error Code</Link>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
+      <Link href="/nvram">NVRAM Viewer</Link>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
+      <Link href="/serviceManual">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -94,19 +95,19 @@ export default function Index() {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {manual && (
-            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {manual}
               </Button>
-            </a>
+            </Link>
           )}
 
           {diagram && (
-            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {diagram}
               </Button>
-            </a>
+            </Link>
           )}
         </Col>
       </Row>

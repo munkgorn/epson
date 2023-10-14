@@ -12,6 +12,7 @@ import axios from 'axios';
 import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -24,12 +25,12 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
     getItem(
-      <a href="/otherCheckErrorCode">Check Error Code</a>,
+      <Link href="/otherCheckErrorCode">Check Error Code</Link>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/otherServiceManual">Service Manual & Diagram</a>,
+      <Link href="/otherServiceManual">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),

@@ -15,173 +15,88 @@ import { Table, Tag } from 'antd';
 import MyModel2 from '@/components/myModel2';
 import { useRecoilState } from 'recoil';
 import { models2State, selectModel2State } from '@/store/data';
-
+import Link from 'next/link';
 const { Content,Sider  } = Layout;
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
-const items2 = [
-  getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
-      'intrlligentDetail',
-      <UserOutlined />,
-    ),
-    getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
-      'checkErrorCode',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
-      'nvram',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
-      'serviceManual',
-      <LaptopOutlined />,
-    ),
-];
-// const columns = [
-//   {
-//     title: '',
-//     dataIndex: 0,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 1,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 2,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 3,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 4,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 5,
-//     key: '',
-//   },
-//   {
-//     title: '',
-//     dataIndex: 6,
-//     key: '',
-//   },
-// ];
-
-// const data = [];
-
-// const props = {
-//   name: 'file',
-//   multiple: false,
-//   action: '/api/upload',
-//   method: 'post',
-// };
-const columns = [
-  {
-    title: 'Item',
-    dataIndex: 0,
-    key: 'col-0',
-  },
-  {
-    title: 'Current Value',
-    dataIndex: 1,
-    key: 'col-1',
-  },
-  {
-    title: 'Limit',
-    dataIndex: 2,
-    key: 'col-2',
-  },
-  {
-    title: 'Situation',
-    dataIndex: 3,
-    key: 'col-3'
-  },
-  {
-    title: 'End of life',
-    dataIndex: 4,
-    key: 'col-4',
-  },
-  {
-    title: '',
-    dataIndex: 5,
-    key: 'col-5',
-  },
-  {
-    title: '',
-    dataIndex: 6,
-    key: 'col-6',
-  },
-];
-const columnsResult = [
-  {
-    title: 'No',
-    dataIndex: 'no',
-    key: 'no',
-  },
-  {
-    title: 'Symptom / Detail',
-    dataIndex: 'symptom',
-    key: 'symptom',
-  },
-  {
-    title: 'Remedy',
-    dataIndex: 'remedy',
-    key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-  },
-];
-const dataResult = [];
 const { Dragger } = Upload;
 const { Meta } = Card;
 
-const items = [
-  {
-    key: '1',
-    label: (
-      <a target="_blank" rel="noopener noreferrer" href="#">
-        Model item
-      </a>
-    ),
-  },
-];
-const props = {
-  name: 'file',
-  multiple: false,
-  action: '/api/upload',
-  method: 'post',
-};
-const propsCalculate = {
-  name: 'file',
-  multiple: false,
-  action: '/api/analytic/readfile',
-  method: 'post',
-};
-export default function Index() {
+export default function IntrlligentDetail() {
   const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
+  const columns = [
+    {
+      title: 'Item',
+      dataIndex: 0,
+      key: 'col-0',
+    },
+    {
+      title: 'Current Value',
+      dataIndex: 1,
+      key: 'col-1',
+    },
+    {
+      title: 'Limit',
+      dataIndex: 2,
+      key: 'col-2',
+    },
+    {
+      title: 'Situation',
+      dataIndex: 3,
+      key: 'col-3'
+    },
+    {
+      title: 'End of life',
+      dataIndex: 4,
+      key: 'col-4',
+    },
+    {
+      title: '',
+      dataIndex: 5,
+      key: 'col-5',
+    },
+    {
+      title: '',
+      dataIndex: 6,
+      key: 'col-6',
+    },
+  ];
+  const columnsResult = [
+    {
+      title: 'No',
+      dataIndex: 'no',
+      key: 'no',
+    },
+    {
+      title: 'Symptom / Detail',
+      dataIndex: 'symptom',
+      key: 'symptom',
+    },
+    {
+      title: 'Remedy',
+      dataIndex: 'remedy',
+      key: 'remedy',
+    },
+    {
+      title: 'Part Code',
+      dataIndex: 'part',
+      key: 'part',
+    },
+  ];
+  const dataResult = [];
+  
+  const propsForDragger = {
+    name: 'file',
+    multiple: false,
+    action: '/api/upload',
+    method: 'post',
+  };
+  const propsCalculate = {
+    name: 'file',
+    multiple: false,
+    action: '/api/analytic/readfile',
+    method: 'post',
+  };
   // useEffect(() => {
   //   fetch('/api/manual/listModelSC')
   //     .then(response => response.json())
@@ -279,17 +194,17 @@ export default function Index() {
               <Menu>
                 {itemsModel.map(item => (
                   <Menu.Item key={item.key}>
-                    <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
+                    <Link onClick={() => handleModelSelect(item.key)}>{item.label}</Link>
                   </Menu.Item>
                 ))}
               </Menu>
             }
           >
-            <a onClick={e => e.preventDefault()}>
+            <Link onClick={e => e.preventDefault()}>
               <Space>
                 Select <DownOutlined />
               </Space>
-            </a>
+            </Link>
           </Dropdown>
           {selectedModel && (
             <p>Selected Model: {selectedModel}</p>
@@ -299,7 +214,7 @@ export default function Index() {
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
           <Dragger
-            {...props}
+            {...propsForDragger}
             onChange={(info) => {
               const { status, originFileObj } = info.file;
               if (status === 'done') {

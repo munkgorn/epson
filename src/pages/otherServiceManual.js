@@ -13,6 +13,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -25,12 +26,12 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-    <a href="/otherCheckErrorCode">Check Error Code</a>,
+    <Link href="/otherCheckErrorCode">Check Error Code</Link>,
     'checkErrorCode',
     <LaptopOutlined />,
   ),
   getItem(
-    <a href="/otherServiceManual">Service Manual & Diagram</a>,
+    <Link href="/otherServiceManual">Service Manual & Diagram</Link>,
     'serviceManual',
     <LaptopOutlined />,
   ),
@@ -104,19 +105,19 @@ export default function Index() {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {manual && (
-            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {manual}
               </Button>
-            </a>
+            </Link>
           )}
 
           {diagram && (
-            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {diagram}
               </Button>
-            </a>
+            </Link>
           )}
         </Col>
       </Row>
